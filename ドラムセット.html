@@ -525,16 +525,13 @@
     };
 
     document.querySelectorAll('.instrument').forEach(inst => {
-    const handler = async (e) => {
-        e.preventDefault();
-
-        await initAudio();
-
-        triggerInstrument(inst.id);
-        activeAnimation(inst);
-    };
-
-    inst.addEventListener('pointerdown', handler);
+        const handler = (e) => {
+            e.preventDefault();
+            triggerInstrument(inst.id);
+            activeAnimation(inst);
+        };
+        inst.addEventListener('mousedown', handler);
+        inst.addEventListener('touchstart', handler, { passive: false });
     });
 
     const keyMap = {
