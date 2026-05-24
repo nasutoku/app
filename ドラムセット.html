@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>アコースティックドラムセット</title>
+
     <style>
+
         :root {
             --gold-light: radial-gradient(circle, #ffe082 0%, #ffb300 70%, #875f00 100%);
             --gold-dark: radial-gradient(circle, #b7950b 0%, #7d6608 80%, #4a3b00 100%);
@@ -27,7 +29,8 @@
             color: #f8fafc;
             user-select: none;
             -webkit-user-select: none;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         header {
@@ -53,6 +56,17 @@
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+        }
+
+        .stage-wrapper {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            overflow: visible;
+        }
+
+        .drum-container {
+            width: 840px;
         }
 
         .stage {
@@ -90,7 +104,7 @@
             box-shadow: 0 18px 35px rgba(0,0,0,0.4), inset 0 2px 5px rgba(255,255,255,0.4);
             border: 1px solid #b7950b;
         }
-        
+
         .cymbal-plate::after {
             content: '';
             position: absolute;
@@ -105,10 +119,10 @@
         #crash-l   { width: 170px; height: 170px; top: 25px;  left: 90px; z-index: 5;}
         #crash-r   { width: 180px; height: 180px; top: 15px;  left: 590px; z-index: 5;}
         #ride      { width: 220px; height: 220px; top: 110px; left: 610px; z-index: 4;}
-                        
-        #hihat-op  { width: 140px; height: 140px; top: 180px; left: 20px; z-index: 4; opacity: 0.9; } 
+
+        #hihat-op  { width: 140px; height: 140px; top: 180px; left: 20px; z-index: 4; opacity: 0.9; }
         #hihat-cl  { width: 140px; height: 140px; top: 180px; left: 130px; z-index: 3; border: 3px solid #d97706;}
-        
+
         #snare     { width: 180px; height: 180px; top: 260px; left: 180px; z-index: 2; }
         #tom-high  { width: 140px; height: 140px; top: 110px; left: 270px; z-index: 4; }
         #tom-mid   { width: 150px; height: 150px; top: 100px; left: 430px; z-index: 3; }
@@ -124,15 +138,24 @@
             color: #1e293b;
             text-shadow: 0 1px 0 rgba(255,255,255,0.8);
             font-size: 0.9rem;
-       }
+        }
+
         .cymbal-plate .label {
             color: #78350f;
             text-shadow: 0 1px 0 rgba(255,255,255,0.8);
             bottom:15px;
         }
-        .drum-shell .label { bottom: 30px; }
-       
-        #bass-drum .label { color: #f8fafc; text-shadow: 0 2px 4px rgba(0,0,0,0.8); top: 50%; transform: translateY(-50%); }
+
+        .drum-shell .label {
+            bottom: 30px;
+        }
+
+        #bass-drum .label {
+            color: #f8fafc;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            top: 50%;
+            transform: translateY(-50%);
+        }
 
         .key-hint {
             background: rgba(30, 41, 59, 0.85);
@@ -146,11 +169,28 @@
             margin-top: 3px;
             display: inline-block;
         }
-        #bass-drum .key-hint { background: rgba(248, 250, 252, 0.9); color: #0f172a; border: none; }
 
-        .instrument:active, .instrument.active { transform: scale(0.96) translateY(5px); }
-        .cymbal-plate:active, .cymbal-plate.active { animation: cymbalWobble 0.5s ease-out; filter: brightness(1.1); }
-        .drum-shell:active, .drum-shell.active { box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 6px 20px rgba(0,0,0,0.3); }
+        #bass-drum .key-hint {
+            background: rgba(248, 250, 252, 0.9);
+            color: #0f172a;
+            border: none;
+        }
+
+        .instrument:active,
+        .instrument.active {
+            transform: scale(0.96) translateY(5px);
+        }
+
+        .cymbal-plate:active,
+        .cymbal-plate.active {
+            animation: cymbalWobble 0.5s ease-out;
+            filter: brightness(1.1);
+        }
+
+        .drum-shell:active,
+        .drum-shell.active {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 6px 20px rgba(0,0,0,0.3);
+        }
 
         @keyframes cymbalWobble {
             0% { transform: rotate3d(1, 0, 0, 8deg) scale(0.96); }
@@ -163,7 +203,6 @@
         .pedal-guide {
             margin-top: 0;
             text-align: center;
-            white-space: nowrap;
             background: rgba(255,255,255,0.05);
             padding: 8px 16px;
             border-radius: 30px;
@@ -172,402 +211,118 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .stage-wrapper {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        @media (max-width: 880px) {
-            .pedal-guide {
-                font-size: calc(0.8rem * ((100vw / 880px) * 0.5+ 0.5));
-                padding: calc(8px * (100vw / 880px)) calc(16px * (100vw / 880px));
-            }
-        }
     </style>
 </head>
 
-
-
-
-
-
 <body>
+
     <header>
         <h1>NATOKU DRUM SET</h1>
         <div class="subtitle">ドラムセットを演奏してみよう！</div>
     </header>
 
     <div class="stage-wrapper">
-    <div class="stage">
-        <!-- シンバル類 -->
-        <div id="crash-l" class="instrument cymbal-plate" data-key="w">
-            <div class="label">Crash L<br><span class="key-hint">Q / W</span></div>
-        </div>
-        <div id="crash-r" class="instrument cymbal-plate" data-key="o">
-            <div class="label">Crash R<br><span class="key-hint">O / P</span></div>
-        </div>
-        <div id="ride" class="instrument cymbal-plate" data-key="l">
-            <div class="label">Ride<br><span class="key-hint">L / ;</span></div>
-        </div>
-        
-        <!-- ハイハット -->
-        <div id="hihat-cl" class="instrument cymbal-plate" data-key="s">
-            <div class="label">Hi-Hat [閉]<br><span class="key-hint">S</span></div>
-        </div>
-        <div id="hihat-op" class="instrument cymbal-plate" data-key="a">
-            <div class="label">Hi-Hat [開]<br><span class="key-hint">A</span></div>
+
+        <div class="drum-container">
+
+            <div class="stage">
+
+                <!-- シンバル類 -->
+                <div id="crash-l" class="instrument cymbal-plate" data-key="w">
+                    <div class="label">Crash L<br><span class="key-hint">Q / W</span></div>
+                </div>
+
+                <div id="crash-r" class="instrument cymbal-plate" data-key="o">
+                    <div class="label">Crash R<br><span class="key-hint">O / P</span></div>
+                </div>
+
+                <div id="ride" class="instrument cymbal-plate" data-key="l">
+                    <div class="label">Ride<br><span class="key-hint">L / ;</span></div>
+                </div>
+
+                <!-- ハイハット -->
+                <div id="hihat-cl" class="instrument cymbal-plate" data-key="s">
+                    <div class="label">Hi-Hat [閉]<br><span class="key-hint">S</span></div>
+                </div>
+
+                <div id="hihat-op" class="instrument cymbal-plate" data-key="a">
+                    <div class="label">Hi-Hat [開]<br><span class="key-hint">A</span></div>
+                </div>
+
+                <!-- 太鼓類 -->
+                <div id="bass-drum" class="instrument drum-shell" data-key=" ">
+                    <div class="label">BASS DRUM<br><span class="key-hint">SPACE</span></div>
+                </div>
+
+                <div id="snare" class="instrument drum-shell" data-key="f">
+                    <div class="label">Snare<br><span class="key-hint">D / F</span></div>
+                </div>
+
+                <div id="tom-high" class="instrument drum-shell" data-key="t">
+                    <div class="label">Hi Tom<br><span class="key-hint">E / R</span></div>
+                </div>
+
+                <div id="tom-mid" class="instrument drum-shell" data-key="u">
+                    <div class="label">Mid Tom<br><span class="key-hint">U / I</span></div>
+                </div>
+
+                <div id="floor-tom" class="instrument drum-shell" data-key="j">
+                    <div class="label">Floor Tom<br><span class="key-hint">J / K</span></div>
+                </div>
+
+            </div>
+
+            <div class="pedal-guide">
+                表示されているアルファベットやスペースキーで演奏することもできます
+            </div>
+
         </div>
 
-        <!-- 太鼓類 -->
-        <div id="bass-drum" class="instrument drum-shell" data-key=" ">
-            <div class="label">BASS DRUM<br><span class="key-hint">SPACE</span></div>
-        </div>
-        
-        <div id="snare" class="instrument drum-shell" data-key="f">
-            <div class="label">Snare<br><span class="key-hint">D / F</span></div>
-        </div>
-        
-        <div id="tom-high" class="instrument drum-shell" data-key="t">
-            <div class="label">Hi Tom<br><span class="key-hint">E / R</span></div>
-        </div>
-        
-        <div id="tom-mid" class="instrument drum-shell" data-key="u">
-            <div class="label">Mid Tom<br><span class="key-hint">U / I</span></div>
-        </div> 
-        
-        <div id="floor-tom" class="instrument drum-shell" data-key="j">
-            <div class="label">Floor Tom<br><span class="key-hint">J / K</span></div>
-        </div>
-
-    </div> <!-- end .stage -->
-    </div> <!-- end .stage-wrapper -->
-    <div class="pedal-guide">表示されているアルファベットやスペースキーで演奏することもできます</div>
-
-
-
-
-
-
+    </div>
 
 <script>
-    // スマートフォン対応：画面幅に合わせてステージをスケーリング
+
+    /* スマートフォン対応：ドラムと説明欄を同時縮小 */
+
     function scaleStage() {
-        const stage = document.querySelector('.stage');
+
+        const container = document.querySelector('.drum-container');
         const wrapper = document.querySelector('.stage-wrapper');
-        const stageBaseWidth = 880;
-        const stageHeight = 480;
+
+        const baseWidth = 840;
+
+        /* ドラム + 説明欄込み高さ */
+        const baseHeight = 560;
+
         const availableWidth = window.innerWidth;
-        if (availableWidth < stageBaseWidth) {
-            const scale = availableWidth / stageBaseWidth;
-            stage.style.transform = `scale(${scale})`;
-            stage.style.transformOrigin = 'top left';
-            stage.style.marginBottom = `${(stageHeight * scale) - stageHeight + 8}px`;
-            wrapper.style.justifyContent = 'flex-start';
+
+        if (availableWidth < baseWidth) {
+
+            const scale = availableWidth / baseWidth;
+
+            container.style.transform = `scale(${scale})`;
+
+            container.style.transformOrigin = 'top center';
+
+            container.style.height = `${baseHeight * scale}px`;
+
+            wrapper.style.justifyContent = 'center';
+
         } else {
-            stage.style.transform = '';
-            stage.style.transformOrigin = '';
-            stage.style.marginBottom = '';
+
+            container.style.transform = '';
+
+            container.style.height = '';
+
             wrapper.style.justifyContent = 'center';
         }
     }
+
     scaleStage();
+
     window.addEventListener('resize', scaleStage);
 
-    let audioCtx = null;
-    let mainGainNode = null;
-
-    function initAudio() {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            mainGainNode = audioCtx.createGain();
-            mainGainNode.gain.value = 0.95;
-            
-            const compressor = audioCtx.createDynamicsCompressor();
-            compressor.threshold.setValueAtTime(-8, audioCtx.currentTime);
-            compressor.knee.setValueAtTime(4, audioCtx.currentTime);
-            compressor.ratio.setValueAtTime(4, audioCtx.currentTime);
-            compressor.attack.setValueAtTime(0.001, audioCtx.currentTime);
-            compressor.release.setValueAtTime(0.1, audioCtx.currentTime);
-            
-            mainGainNode.connect(compressor);
-            compressor.connect(audioCtx.destination);
-        }
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-    }
-
-    // 1. バスドラム
-    function playBassDrum(time) {
-        const clickOsc = audioCtx.createOscillator();
-        const clickGain = audioCtx.createGain();
-        clickOsc.connect(clickGain); clickGain.connect(mainGainNode);
-        clickOsc.frequency.setValueAtTime(900, time);
-        clickOsc.frequency.exponentialRampToValueAtTime(140, time + 0.015);
-        clickGain.gain.setValueAtTime(0.4, time);
-        clickGain.gain.exponentialRampToValueAtTime(0.001, time + 0.015);
-        clickOsc.start(time); clickOsc.stop(time + 0.015);
-
-        const bodyOsc = audioCtx.createOscillator();
-        const bodyGain = audioCtx.createGain();
-        bodyOsc.connect(bodyGain); bodyGain.connect(mainGainNode);
-        bodyOsc.type = 'sine';
-        bodyOsc.frequency.setValueAtTime(115, time);
-        bodyOsc.frequency.exponentialRampToValueAtTime(48, time + 0.1);
-        bodyGain.gain.setValueAtTime(1.3, time);
-        bodyGain.gain.linearRampToValueAtTime(0.7, time + 0.02);
-        bodyGain.gain.exponentialRampToValueAtTime(0.001, time + 0.32);
-        bodyOsc.start(time); bodyOsc.stop(time + 0.32);
-    }
-
-    // 2. スネアドラム
-    function playSnare(time) {
-        const bufferSize = audioCtx.sampleRate * 0.22;
-        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; }
-        
-        const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
-        const noiseFilter = audioCtx.createBiquadFilter();
-        noiseFilter.type = 'highpass'; noiseFilter.frequency.setValueAtTime(1400, time);
-        const noiseGain = audioCtx.createGain();
-        noiseGain.gain.setValueAtTime(0.6, time);
-        noiseGain.gain.exponentialRampToValueAtTime(0.001, time + 0.18);
-        noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(mainGainNode);
-        noise.start(time); noise.stop(time + 0.2);
-
-        const osc1 = audioCtx.createOscillator(); const osc2 = audioCtx.createOscillator();
-        const drumGain = audioCtx.createGain();
-        osc1.type = 'triangle'; osc1.frequency.setValueAtTime(180, time); osc1.frequency.exponentialRampToValueAtTime(135, time + 0.07);
-        osc2.type = 'sine'; osc2.frequency.setValueAtTime(330, time); osc2.frequency.exponentialRampToValueAtTime(180, time + 0.04);
-        drumGain.gain.setValueAtTime(0.75, time); drumGain.gain.exponentialRampToValueAtTime(0.001, time + 0.1);
-        osc1.connect(drumGain); osc2.connect(drumGain); drumGain.connect(mainGainNode);
-        osc1.start(time); osc2.start(time); osc1.stop(time + 0.1); osc2.stop(time + 0.1);
-    }
-
-    // タム合成エンジン
-    function playTom(time, baseFreq, duration, volume) {
-        const attackBufferSize = audioCtx.sampleRate * 0.025;
-        const attackBuffer = audioCtx.createBuffer(1, attackBufferSize, audioCtx.sampleRate);
-        const attackData = attackBuffer.getChannelData(0);
-        for (let i = 0; i < attackBufferSize; i++) { attackData[i] = Math.random() * 2 - 1; }
-        
-        const noiseSrc = audioCtx.createBufferSource();
-        noiseSrc.buffer = attackBuffer;
-        
-        const noiseFilter = audioCtx.createBiquadFilter();
-        noiseFilter.type = 'lowpass';
-        noiseFilter.frequency.setValueAtTime(900, time);
-        
-        const noiseGain = audioCtx.createGain();
-        noiseGain.gain.setValueAtTime(volume * 0.38, time);
-        noiseGain.gain.exponentialRampToValueAtTime(0.001, time + 0.02);
-        
-        noiseSrc.connect(noiseFilter);
-        noiseFilter.connect(noiseGain);
-        noiseGain.connect(mainGainNode);
-        noiseSrc.start(time);
-        noiseSrc.stop(time + 0.025);
-
-        const mainOsc = audioCtx.createOscillator();
-        const mainGain = audioCtx.createGain();
-        mainOsc.type = 'sine';
-        
-        mainOsc.frequency.setValueAtTime(baseFreq * 1.5, time);
-        mainOsc.frequency.exponentialRampToValueAtTime(baseFreq, time + 0.04);
-        mainOsc.frequency.linearRampToValueAtTime(baseFreq * 0.92, time + duration);
-        
-        mainGain.gain.setValueAtTime(volume * 1.2, time);
-        mainGain.gain.exponentialRampToValueAtTime(0.001, time + duration);
-        
-        mainOsc.connect(mainGain);
-        mainGain.connect(mainGainNode);
-        mainOsc.start(time);
-        mainOsc.stop(time + duration);
-
-        const membraneModes = [1.59, 2.14, 2.30];
-        const modeGains = [0.4, 0.2, 0.1];
-        
-        membraneModes.forEach((modeRatio, idx) => {
-            const modeOsc = audioCtx.createOscillator();
-            const modeGain = audioCtx.createGain();
-            
-            modeOsc.type = 'sine';
-            const overtoneFreq = baseFreq * modeRatio;
-            
-            modeOsc.frequency.setValueAtTime(overtoneFreq * 1.4, time);
-            modeOsc.frequency.exponentialRampToValueAtTime(overtoneFreq, time + 0.05);
-            
-            const modeDecay = duration * (0.4 / (idx + 1));
-            
-            modeGain.gain.setValueAtTime(volume * modeGains[idx], time);
-            modeGain.gain.exponentialRampToValueAtTime(0.001, time + modeDecay);
-            
-            modeOsc.connect(modeGain);
-            modeGain.connect(mainGainNode);
-            modeOsc.start(time);
-            modeOsc.stop(time + modeDecay + 0.01);
-        });
-    }
-
-    // ハイハット合成アルゴリズム
-    function playUltraHiHat(time, isOpen = false) {
-        const metalFrequencies = [315, 425, 545, 690, 845, 1020];
-        const bpassFilter = audioCtx.createBiquadFilter();
-        bpassFilter.type = 'bandpass';
-        bpassFilter.frequency.setValueAtTime(8500, time);
-        bpassFilter.Q.setValueAtTime(4, time);
-
-        const hpassFilter = audioCtx.createBiquadFilter();
-        hpassFilter.type = 'highpass';
-        hpassFilter.frequency.setValueAtTime(7000, time);
-
-        const gainNode = audioCtx.createGain();
-        const duration = isOpen ? 0.65 : 0.055;
-
-        gainNode.gain.setValueAtTime(isOpen ? 0.38 : 0.45, time);
-        if (isOpen) {
-            gainNode.gain.exponentialRampToValueAtTime(0.05, time + 0.25);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, time + duration);
-        } else {
-            gainNode.gain.exponentialRampToValueAtTime(0.001, time + duration);
-        }
-
-        metalFrequencies.forEach(freq => {
-            const osc = audioCtx.createOscillator();
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(freq, time);
-            osc.frequency.linearRampToValueAtTime(freq * 1.02, time + duration);
-            osc.connect(bpassFilter);
-            osc.start(time);
-            osc.stop(time + duration + 0.05);
-        });
-
-        const bufferSize = audioCtx.sampleRate * duration;
-        if (bufferSize > 0) {
-            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; }
-            
-            const noiseSrc = audioCtx.createBufferSource();
-            noiseSrc.buffer = buffer;
-            
-            const noiseFilter = audioCtx.createBiquadFilter();
-            noiseFilter.type = 'highpass';
-            noiseFilter.frequency.setValueAtTime(9500, time);
-            
-            const noiseGain = audioCtx.createGain();
-            noiseGain.gain.setValueAtTime(isOpen ? 0.22 : 0.35, time);
-            noiseGain.gain.exponentialRampToValueAtTime(0.001, time + duration);
-            
-            noiseSrc.connect(noiseFilter);
-            noiseFilter.connect(noiseGain);
-            noiseGain.connect(gainNode);
-            noiseSrc.start(time);
-            noiseSrc.stop(time + duration);
-        }
-
-        bpassFilter.connect(hpassFilter);
-        hpassFilter.connect(gainNode);
-        gainNode.connect(mainGainNode);
-    }
-
-    // シンバル
-    function playCymbal(time, isRide = false) {
-        const bufferSize = audioCtx.sampleRate * (isRide ? 2.3 : 1.8);
-        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; }
-
-        const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
-        const hpFilter = audioCtx.createBiquadFilter();
-        hpFilter.type = 'highpass'; hpFilter.frequency.setValueAtTime(isRide ? 5200 : 3600, time);
-        const peakFilter = audioCtx.createBiquadFilter();
-        peakFilter.type = 'peaking'; peakFilter.frequency.setValueAtTime(isRide ? 8500 : 7200, time);
-        peakFilter.Q.setValueAtTime(3, time); peakFilter.gain.setValueAtTime(5, time);
-
-        const gain = audioCtx.createGain();
-        const maxVol = isRide ? 0.32 : 0.5;
-        const decay = isRide ? 1.6 : 1.3;
-        gain.gain.setValueAtTime(maxVol, time);
-        gain.gain.linearRampToValueAtTime(maxVol * 0.4, time + 0.04);
-        gain.gain.exponentialRampToValueAtTime(0.001, time + decay);
-
-        noise.connect(hpFilter); hpFilter.connect(peakFilter); peakFilter.connect(gain); gain.connect(mainGainNode);
-        noise.start(time); noise.stop(time + decay);
-    }
-
-    function triggerInstrument(id) {
-        initAudio();
-        const now = audioCtx.currentTime;
-        switch (id) {
-            case 'bass-drum': playBassDrum(now); break;
-            case 'snare':     playSnare(now); break;
-            case 'tom-high':  playTom(now, 150, 0.38, 0.85); break;
-            case 'tom-mid':   playTom(now, 118, 0.46, 0.85); break;
-            case 'floor-tom': playTom(now, 85,  0.62, 0.95); break;
-            case 'hihat-cl':  playUltraHiHat(now, false); break;
-            case 'hihat-op':  playUltraHiHat(now, true); break;
-            case 'crash-l':   playCymbal(now, false); break;
-            case 'crash-r':   playCymbal(now, false); break;
-            case 'ride':      playCymbal(now, true); break;
-        }
-    }
-
-    const activeAnimation = (el) => {
-        if(!el) return;
-        el.classList.add('active');
-        setTimeout(() => el.classList.remove('active'), 70);
-    };
-
-    document.querySelectorAll('.instrument').forEach(inst => {
-        const handler = (e) => {
-            e.preventDefault();
-            triggerInstrument(inst.id);
-            activeAnimation(inst);
-        };
-        inst.addEventListener('mousedown', handler);
-        inst.addEventListener('touchstart', handler, { passive: false });
-    });
-
-    const keyMap = {
-        'q': 'crash-l', 'Q': 'crash-l',
-        'w': 'crash-l', 'W': 'crash-l',
-        
-        'o': 'crash-r', 'O': 'crash-r',
-        'p': 'crash-r', 'P': 'crash-r',
-  
-        'l': 'ride',    'L': 'ride',
-        ';': 'ride',    '+': 'ride',
-      
-        's': 'hihat-cl','S': 'hihat-cl',
-        'a': 'hihat-op','A': 'hihat-op',
-        
-        'd': 'snare',   'D': 'snare',
-        'f': 'snare',   'F': 'snare',
-         
-        'e': 'tom-high','E': 'tom-high',
-        'r': 'tom-high','R': 'tom-high',
-        
-        'u': 'tom-mid', 'U': 'tom-mid',         
-        'i': 'tom-mid', 'I': 'tom-mid',
-               
-        'j': 'floor-tom','J': 'floor-tom',
-        'k': 'floor-tom','K': 'floor-tom',        
-
-        ' ': 'bass-drum'
-    };
-
-    window.addEventListener('keydown', (e) => {
-        const targetId = keyMap[e.key];
-        if (targetId) {
-            const el = document.getElementById(targetId);
-            triggerInstrument(targetId);
-            activeAnimation(el);
-        }
-    });
 </script>
+
 </body>
 </html>
