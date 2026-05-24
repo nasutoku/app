@@ -36,7 +36,8 @@
     align-items: center;
     justify-content: center;
     font-family: 'DM Mono', monospace;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     position: relative;
   }
 
@@ -129,6 +130,10 @@
     position: relative;
     overflow: visible;
     padding-bottom: 0;
+  }
+
+  .piano-scale-root {
+    transform-origin: top center;
   }
 
   .keyboard {
@@ -421,12 +426,14 @@
     <p class="subtitle">2 Octaves · C4 to C6</p>
   </div>
 
+  <div class="piano-scale-root" id="pianoScaleRoot">
   <div class="piano-shell">
     <div class="brand-strip"><span>Natoku Piano</span></div>
     <div class="keyboard-wrap">
       <div class="keyboard" id="keyboard"></div>
     </div>
     <div class="piano-base"></div>
+  </div>
   </div>
 
   <div class="controls">
@@ -766,6 +773,30 @@ sustainBtn.addEventListener('click', () => {
   sustainBtn.classList.toggle('on', sustain);
   if (!sustain) releaseAll();
 });
+
+// ---- レスポンシブ スケーリング ----
+// 鍵盤の自然な横幅: 白鍵15枚 × 53px = 795px、シェルのpadding 64px = 約860px
+const PIANO_NATURAL_W = 860;
+
+function scalePiano() {
+  const root = document.getElementById('pianoScaleRoot');
+  const avail = window.innerWidth;
+  if (avail >= PIANO_NATURAL_W) {
+    // デスクトップ: スケーリング不要
+    root.style.transform = '';
+    root.style.marginBottom = '';
+  } else {
+    const scale = avail / PIANO_NATURAL_W;
+    root.style.transform = `scale(${scale})`;
+    // scale縮小で下に余白ができるのを補正
+    const naturalH = root.offsetHeight;
+    const shrink = naturalH * (1 - scale);
+    root.style.marginBottom = `-${shrink}px`;
+  }
+}
+
+scalePiano();
+window.addEventListener('resize', scalePiano);
 </script>
 </body>
 </html>
