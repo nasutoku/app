@@ -1,0 +1,771 @@
+<!--2026/5/23 古川がClaudeで作成-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Natoku Piano</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ivory: #f5f0e8;
+    --ivory-pressed: #e8ddc8;
+    --ivory-hover: #ede6d6;
+    --ebony: #1a1410;
+    --ebony-pressed: #3d3020;
+    --ebony-hover: #2a2018;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --bg-dark: #0d0b08;
+    --bg-mid: #1c1810;
+    --surface: #211d15;
+    --text-primary: #f0e8d8;
+    --text-muted: #8a7d65;
+    --glow: rgba(201, 168, 76, 0.15);
+    --shadow-key: 0 8px 24px rgba(0,0,0,0.6), 0 2px 4px rgba(0,0,0,0.8);
+    --shadow-black: 0 6px 18px rgba(0,0,0,0.9), 0 2px 6px rgba(0,0,0,0.7);
+  }
+
+  body {
+    background: var(--bg-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    overflow: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(201,168,76,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 20% 100%, rgba(100,80,40,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(100,80,40,0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+    padding: 32px 20px;
+    width: 100%;
+    max-width: 1100px;
+  }
+
+  .header {
+    text-align: center;
+    user-select: none;
+  }
+
+  .header h1 {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.5em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    opacity: 0.85;
+  }
+
+  .header .subtitle {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .piano-shell {
+    background: linear-gradient(180deg, #2a2218 0%, #1a1610 30%, #0f0d09 100%);
+    border-radius: 12px 12px 6px 6px;
+    padding: 28px 32px 0;
+    box-shadow:
+      0 0 0 1px rgba(201,168,76,0.12),
+      0 4px 0 rgba(201,168,76,0.08),
+      0 20px 80px rgba(0,0,0,0.8),
+      0 60px 120px rgba(0,0,0,0.5),
+      inset 0 1px 0 rgba(201,168,76,0.15);
+    position: relative;
+  }
+
+  .piano-shell::before {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 32px;
+    right: 32px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.2), rgba(201,168,76,0.4), rgba(201,168,76,0.2), transparent);
+  }
+
+  .brand-strip {
+    text-align: center;
+    margin-bottom: 20px;
+    user-select: none;
+  }
+
+  .brand-strip span {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 11px;
+    letter-spacing: 0.6em;
+    color: var(--gold);
+    opacity: 0.5;
+    text-transform: uppercase;
+  }
+
+  .keyboard-wrap {
+    position: relative;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  .keyboard {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    user-select: none;
+  }
+
+  .white-key {
+    position: relative;
+    width: 52px;
+    height: 200px;
+    background: linear-gradient(180deg, var(--ivory) 0%, #ede6d6 60%, #ddd4bc 100%);
+    border: 1px solid rgba(180,160,120,0.4);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    cursor: pointer;
+    transition: background 60ms ease, transform 60ms ease;
+    box-shadow: var(--shadow-key), inset 0 1px 0 rgba(255,255,255,0.8), inset -1px 0 0 rgba(180,160,120,0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 16px;
+    transform-origin: top center;
+    z-index: 1;
+  }
+
+  .white-key + .white-key {
+    margin-left: 1px;
+  }
+
+  .white-key:hover {
+    background: linear-gradient(180deg, var(--ivory-hover) 0%, #e5dac8 60%, #d5cab2 100%);
+  }
+
+  .white-key.pressed, .white-key.active {
+    background: linear-gradient(180deg, var(--ivory-pressed) 0%, #ddd0b0 60%, #ccbf9a 100%);
+    transform: perspective(300px) rotateX(2deg);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 2px 4px rgba(0,0,0,0.1), inset 0 -2px 0 rgba(255,255,255,0.3);
+  }
+
+  .key-label {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6a5c40;
+    letter-spacing: 0;
+    line-height: 1;
+    pointer-events: none;
+    transition: color 60ms;
+  }
+
+  .white-key.pressed .key-label,
+  .white-key.active .key-label {
+    color: #4a3c28;
+  }
+
+  .octave-num {
+    font-size: 8px;
+    color: #9a8c70;
+    letter-spacing: 0;
+    margin-top: 3px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    pointer-events: none;
+  }
+
+  .black-key {
+    position: absolute;
+    width: 32px;
+    height: 126px;
+    background: linear-gradient(180deg, #2e2820 0%, #1a1410 40%, #0e0c09 100%);
+    border-radius: 0 0 5px 5px;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: var(--shadow-black), inset 0 1px 0 rgba(255,255,255,0.06), inset -1px 0 0 rgba(255,255,255,0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 8px;
+    gap: 2px;
+    transition: background 60ms ease, transform 60ms ease, box-shadow 60ms ease;
+    transform-origin: top center;
+    border: 1px solid rgba(0,0,0,0.8);
+    border-top: none;
+  }
+
+  .black-key:hover {
+    background: linear-gradient(180deg, #3d3528 0%, #282010 40%, #181410 100%);
+  }
+
+  .black-key.pressed, .black-key.active {
+    background: linear-gradient(180deg, #4a3e2a 0%, #332810 40%, #201a0a 100%);
+    transform: perspective(200px) rotateX(3deg);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.9), inset 0 2px 4px rgba(0,0,0,0.5);
+  }
+
+  .black-key .key-label {
+    font-size: 9px;
+    color: rgba(201,168,76,0.55);
+    letter-spacing: 0;
+    text-align: center;
+    line-height: 1.2;
+    pointer-events: none;
+    font-family: 'Shippori Mincho', serif;
+  }
+
+  .black-key .flat-label {
+    color: rgba(180,210,255,0.45);
+  }
+
+  .black-key.pressed .key-label,
+  .black-key.active .key-label {
+    color: rgba(201,168,76,0.9);
+  }
+
+  .black-key.pressed .flat-label,
+  .black-key.active .flat-label {
+    color: rgba(180,210,255,0.8);
+  }
+
+  .key-divider {
+    width: 20px;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+
+  .piano-base {
+    height: 16px;
+    background: linear-gradient(180deg, #1a1610 0%, #0d0b08 100%);
+    margin: 0 -32px;
+    border-radius: 0 0 6px 6px;
+    border-top: 1px solid rgba(0,0,0,0.6);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .control-label {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 90px;
+    height: 2px;
+    background: rgba(201,168,76,0.2);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid var(--bg-dark);
+    box-shadow: 0 0 6px rgba(201,168,76,0.4);
+    cursor: pointer;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid var(--bg-dark);
+    cursor: pointer;
+  }
+
+  .range-val {
+    font-size: 10px;
+    color: var(--gold);
+    min-width: 28px;
+    text-align: right;
+    font-weight: 300;
+  }
+
+  .wave-btns {
+    display: flex;
+    gap: 6px;
+  }
+
+  .wave-btn {
+    padding: 5px 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 3px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 120ms;
+    text-transform: uppercase;
+  }
+
+  .wave-btn.active {
+    background: rgba(201,168,76,0.12);
+    border-color: rgba(201,168,76,0.5);
+    color: var(--gold);
+  }
+
+  .wave-btn:hover:not(.active) {
+    border-color: rgba(201,168,76,0.35);
+    color: rgba(201,168,76,0.7);
+  }
+
+  .divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(201,168,76,0.15);
+  }
+
+  .active-note-display {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--gold);
+    min-width: 60px;
+    text-align: center;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    transition: opacity 200ms;
+    text-shadow: 0 0 20px rgba(201,168,76,0.4);
+  }
+
+  .active-note-display.visible {
+    opacity: 1;
+  }
+
+  .sustain-btn {
+    padding: 5px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 3px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 120ms;
+    text-transform: uppercase;
+  }
+
+  .sustain-btn.on {
+    background: rgba(201,168,76,0.1);
+    border-color: rgba(201,168,76,0.5);
+    color: var(--gold);
+  }
+
+  .kb-hint {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: rgba(138,125,101,0.4);
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: -16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>なとくピアノ</h1>
+    <p class="subtitle">2 Octaves · C4 to C6</p>
+  </div>
+
+  <div class="piano-shell">
+    <div class="brand-strip"><span>Natoku Piano</span></div>
+    <div class="keyboard-wrap">
+      <div class="keyboard" id="keyboard"></div>
+    </div>
+    <div class="piano-base"></div>
+  </div>
+
+  <div class="controls">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="control-label">音量</span>
+      <input type="range" id="vol" min="0" max="100" value="80" step="1">
+      <span class="range-val" id="vol-val">80</span>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="control-label">残響</span>
+      <input type="range" id="rev" min="0" max="100" value="35" step="1">
+      <span class="range-val" id="rev-val">35</span>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="control-label">音色</span>
+      <div class="wave-btns">
+        <button class="wave-btn active" data-wave="piano">Piano</button>
+        <button class="wave-btn" data-wave="sine">Sine</button>
+        <button class="wave-btn" data-wave="triangle">Tri</button>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="active-note-display" id="note-display">ド</div>
+    <div class="divider"></div>
+    <button class="sustain-btn" id="sustain-btn">Sus</button>
+  </div>
+
+  <p class="kb-hint">クリック・タップで演奏 · keyboard: A S D F G H J K L ; ' Z X C V B N M , . /</p>
+</div>
+
+<script>
+const AC = window.AudioContext || window.webkitAudioContext;
+let ctx = null;
+let masterGain, reverbNode, dryGain, wetGain;
+let reverbAmount = 0.35;
+let volume = 0.8;
+let waveType = 'piano';
+let sustain = false;
+let activeNodes = {};
+let sustainedNotes = {};
+
+function initAudio() {
+  if (ctx) return;
+  ctx = new AC();
+  masterGain = ctx.createGain();
+  masterGain.gain.value = volume;
+
+  // Reverb using convolver
+  reverbNode = ctx.createConvolver();
+  buildImpulse();
+
+  dryGain = ctx.createGain();
+  dryGain.gain.value = 1 - reverbAmount;
+  wetGain = ctx.createGain();
+  wetGain.gain.value = reverbAmount;
+
+  masterGain.connect(dryGain);
+  masterGain.connect(reverbNode);
+  reverbNode.connect(wetGain);
+  dryGain.connect(ctx.destination);
+  wetGain.connect(ctx.destination);
+}
+
+function buildImpulse() {
+  const rate = ctx.sampleRate;
+  const len = rate * 2.5;
+  const buf = ctx.createBuffer(2, len, rate);
+  for (let c = 0; c < 2; c++) {
+    const d = buf.getChannelData(c);
+    for (let i = 0; i < len; i++) {
+      d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.2);
+    }
+  }
+  reverbNode.buffer = buf;
+}
+
+function createPianoTone(freq) {
+  // Rich piano-like timbre using multiple oscillators + noise burst
+  const osc1 = ctx.createOscillator();
+  const osc2 = ctx.createOscillator();
+  const osc3 = ctx.createOscillator();
+  const gainNode = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+
+  osc1.type = 'triangle';
+  osc1.frequency.value = freq;
+  osc2.type = 'sine';
+  osc2.frequency.value = freq * 2;
+  osc3.type = 'sine';
+  osc3.frequency.value = freq * 3.01;
+
+  const g1 = ctx.createGain(); g1.gain.value = 0.7;
+  const g2 = ctx.createGain(); g2.gain.value = 0.25;
+  const g3 = ctx.createGain(); g3.gain.value = 0.08;
+
+  filter.type = 'lowpass';
+  filter.frequency.value = freq * 8;
+  filter.Q.value = 0.8;
+
+  osc1.connect(g1); g1.connect(filter);
+  osc2.connect(g2); g2.connect(filter);
+  osc3.connect(g3); g3.connect(filter);
+  filter.connect(gainNode);
+
+  // Piano envelope: sharp attack, medium decay, low sustain, slow release
+  const t = ctx.currentTime;
+  gainNode.gain.setValueAtTime(0, t);
+  gainNode.gain.linearRampToValueAtTime(0.9, t + 0.005);
+  gainNode.gain.exponentialRampToValueAtTime(0.35, t + 0.12);
+  gainNode.gain.exponentialRampToValueAtTime(0.2, t + 0.5);
+
+  osc1.start(t); osc2.start(t); osc3.start(t);
+
+  return { oscs: [osc1, osc2, osc3], gainNode, filter };
+}
+
+function createSimpleTone(freq, type) {
+  const osc = ctx.createOscillator();
+  const gainNode = ctx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  osc.connect(gainNode);
+  const t = ctx.currentTime;
+  gainNode.gain.setValueAtTime(0, t);
+  gainNode.gain.linearRampToValueAtTime(0.6, t + 0.008);
+  gainNode.gain.exponentialRampToValueAtTime(0.25, t + 0.3);
+  osc.start(t);
+  return { oscs: [osc], gainNode };
+}
+
+function noteOn(noteId, freq) {
+  initAudio();
+  if (activeNodes[noteId]) noteOff(noteId);
+
+  let tone;
+  if (waveType === 'piano') tone = createPianoTone(freq);
+  else if (waveType === 'sine') tone = createSimpleTone(freq, 'sine');
+  else tone = createSimpleTone(freq, 'triangle');
+
+  tone.gainNode.connect(masterGain);
+  activeNodes[noteId] = tone;
+
+  if (sustain) sustainedNotes[noteId] = true;
+}
+
+function noteOff(noteId) {
+  if (sustain && sustainedNotes[noteId]) return;
+  const tone = activeNodes[noteId];
+  if (!tone) return;
+  const t = ctx.currentTime;
+  tone.gainNode.gain.cancelScheduledValues(t);
+  tone.gainNode.gain.setValueAtTime(tone.gainNode.gain.value, t);
+  tone.gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+  tone.oscs.forEach(o => o.stop(t + 0.7));
+  delete activeNodes[noteId];
+}
+
+function releaseAll() {
+  Object.keys(activeNodes).forEach(noteId => {
+    sustainedNotes[noteId] = false;
+    noteOff(noteId);
+  });
+  sustainedNotes = {};
+}
+
+// Note data
+const WHITE_NOTES = [
+  // Octave 4
+  { id: 'C4', label: 'ド', eng: 'C', freq: 261.63 },
+  { id: 'D4', label: 'レ', eng: 'D', freq: 293.66 },
+  { id: 'E4', label: 'ミ', eng: 'E', freq: 329.63 },
+  { id: 'F4', label: 'ファ', eng: 'F', freq: 349.23 },
+  { id: 'G4', label: 'ソ', eng: 'G', freq: 392.00 },
+  { id: 'A4', label: 'ラ', eng: 'A', freq: 440.00 },
+  { id: 'B4', label: 'シ', eng: 'B', freq: 493.88 },
+  // Octave 5
+  { id: 'C5', label: 'ド', eng: 'C', freq: 523.25 },
+  { id: 'D5', label: 'レ', eng: 'D', freq: 587.33 },
+  { id: 'E5', label: 'ミ', eng: 'E', freq: 659.25 },
+  { id: 'F5', label: 'ファ', eng: 'F', freq: 698.46 },
+  { id: 'G5', label: 'ソ', eng: 'G', freq: 783.99 },
+  { id: 'A5', label: 'ラ', eng: 'A', freq: 880.00 },
+  { id: 'B5', label: 'シ', eng: 'B', freq: 987.77 },
+  // Top C
+  { id: 'C6', label: 'ド', eng: 'C', freq: 1046.50 },
+];
+
+const BLACK_NOTES = [
+  { id: 'Cs4', label: 'ド♯', flat: 'レ♭', freq: 277.18, after: 'C4' },
+  { id: 'Ds4', label: 'レ♯', flat: 'ミ♭', freq: 311.13, after: 'D4' },
+  { id: 'Fs4', label: 'ファ♯', flat: 'ソ♭', freq: 369.99, after: 'F4' },
+  { id: 'Gs4', label: 'ソ♯', flat: 'ラ♭', freq: 415.30, after: 'G4' },
+  { id: 'As4', label: 'ラ♯', flat: 'シ♭', freq: 466.16, after: 'A4' },
+  { id: 'Cs5', label: 'ド♯', flat: 'レ♭', freq: 554.37, after: 'C5' },
+  { id: 'Ds5', label: 'レ♯', flat: 'ミ♭', freq: 622.25, after: 'D5' },
+  { id: 'Fs5', label: 'ファ♯', flat: 'ソ♭', freq: 739.99, after: 'F5' },
+  { id: 'Gs5', label: 'ソ♯', flat: 'ラ♭', freq: 830.61, after: 'G5' },
+  { id: 'As5', label: 'ラ♯', flat: 'シ♭', freq: 932.33, after: 'A5' },
+];
+
+const KB_MAP = {
+  'a': 'C4', 's': 'D4', 'd': 'E4', 'f': 'F4', 'g': 'G4', 'h': 'A4', 'j': 'B4',
+  'k': 'C5', 'l': 'D5', ';': 'E5', "'": 'F5',
+  'z': 'G5', 'x': 'A5', 'c': 'B5', 'v': 'C6',
+  'w': 'Cs4', 'e': 'Ds4', 't': 'Fs4', 'y': 'Gs4', 'u': 'As4',
+  'i': 'Cs5', 'o': 'Ds5', '[': 'Fs5', ']': 'Gs5', '\\': 'As5',
+};
+
+const noteDisplay = document.getElementById('note-display');
+let displayTimeout;
+
+function showNote(label) {
+  noteDisplay.textContent = label;
+  noteDisplay.classList.add('visible');
+  clearTimeout(displayTimeout);
+  displayTimeout = setTimeout(() => noteDisplay.classList.remove('visible'), 1200);
+}
+
+// Build keyboard
+const keyboard = document.getElementById('keyboard');
+const whiteKeyEls = {};
+const blackKeyEls = {};
+
+// Create white keys
+WHITE_NOTES.forEach(n => {
+  const el = document.createElement('div');
+  el.className = 'white-key';
+  el.dataset.id = n.id;
+  el.innerHTML = `<span class="key-label">${n.label}</span><span class="octave-num">${n.eng}</span>`;
+  keyboard.appendChild(el);
+  whiteKeyEls[n.id] = el;
+
+  el.addEventListener('mousedown', e => { e.preventDefault(); pressKey(n.id, n.freq, n.label); });
+  el.addEventListener('mouseup', () => releaseKey(n.id));
+  el.addEventListener('mouseleave', e => { if (e.buttons & 1) releaseKey(n.id); });
+  el.addEventListener('touchstart', e => { e.preventDefault(); pressKey(n.id, n.freq, n.label); }, { passive: false });
+  el.addEventListener('touchend', e => { e.preventDefault(); releaseKey(n.id); });
+});
+
+// Position and create black keys
+const keyWidth = 53; // white key width + 1px gap
+
+BLACK_NOTES.forEach(n => {
+  const afterNote = WHITE_NOTES.find(w => w.id === n.after);
+  if (!afterNote) return;
+  const afterIdx = WHITE_NOTES.indexOf(afterNote);
+
+  const el = document.createElement('div');
+  el.className = 'black-key';
+  el.dataset.id = n.id;
+  el.innerHTML = `<span class="key-label">${n.label}</span><span class="key-divider"></span><span class="key-label flat-label">${n.flat}</span>`;
+
+  // Position: right side of the 'after' white key, centered between it and next
+  const leftPx = afterIdx * keyWidth + keyWidth - 17;
+  el.style.left = leftPx + 'px';
+  el.style.position = 'absolute';
+  el.style.top = '0';
+
+  keyboard.style.position = 'relative';
+  keyboard.appendChild(el);
+  blackKeyEls[n.id] = el;
+
+  el.addEventListener('mousedown', e => { e.preventDefault(); pressKey(n.id, n.freq, n.label); });
+  el.addEventListener('mouseup', () => releaseKey(n.id));
+  el.addEventListener('mouseleave', e => { if (e.buttons & 1) releaseKey(n.id); });
+  el.addEventListener('touchstart', e => { e.preventDefault(); pressKey(n.id, n.freq, n.label); }, { passive: false });
+  el.addEventListener('touchend', e => { e.preventDefault(); releaseKey(n.id); });
+});
+
+function pressKey(id, freq, label) {
+  const el = whiteKeyEls[id] || blackKeyEls[id];
+  if (el) el.classList.add('pressed');
+  noteOn(id, freq);
+  showNote(label);
+}
+
+function releaseKey(id) {
+  const el = whiteKeyEls[id] || blackKeyEls[id];
+  if (el) el.classList.remove('pressed');
+  noteOff(id);
+}
+
+// Keyboard events
+const keyDown = new Set();
+document.addEventListener('keydown', e => {
+  if (e.repeat) return;
+  const id = KB_MAP[e.key.toLowerCase()] || KB_MAP[e.key];
+  if (!id) return;
+  const note = WHITE_NOTES.find(n => n.id === id) || BLACK_NOTES.find(n => n.id === id);
+  if (!note) return;
+  keyDown.add(id);
+  pressKey(id, note.freq, note.label);
+});
+
+document.addEventListener('keyup', e => {
+  const id = KB_MAP[e.key.toLowerCase()] || KB_MAP[e.key];
+  if (!id) return;
+  keyDown.delete(id);
+  releaseKey(id);
+});
+
+// Global mouse up
+document.addEventListener('mouseup', () => {
+  Object.keys(whiteKeyEls).forEach(id => { whiteKeyEls[id].classList.remove('pressed'); noteOff(id); });
+  Object.keys(blackKeyEls).forEach(id => { blackKeyEls[id].classList.remove('pressed'); noteOff(id); });
+});
+
+// Controls
+document.getElementById('vol').addEventListener('input', function() {
+  volume = this.value / 100;
+  document.getElementById('vol-val').textContent = this.value;
+  if (masterGain) masterGain.gain.value = volume;
+});
+
+document.getElementById('rev').addEventListener('input', function() {
+  reverbAmount = this.value / 100;
+  document.getElementById('rev-val').textContent = this.value;
+  if (dryGain) {
+    dryGain.gain.value = 1 - reverbAmount;
+    wetGain.gain.value = reverbAmount;
+  }
+});
+
+document.querySelectorAll('.wave-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.wave-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    waveType = btn.dataset.wave;
+  });
+});
+
+const sustainBtn = document.getElementById('sustain-btn');
+sustainBtn.addEventListener('click', () => {
+  sustain = !sustain;
+  sustainBtn.classList.toggle('on', sustain);
+  if (!sustain) releaseAll();
+});
+</script>
+</body>
+</html>
