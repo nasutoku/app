@@ -185,7 +185,7 @@
 
         @media (max-width: 880px) {
             .pedal-guide {
-                font-size: 0.65rem;
+                font-size: 0.75rem;
                 padding: 6px 10px;
             }
         }
@@ -250,7 +250,7 @@
     </div> <!-- end .drum-container -->
     </div> <!-- end .stage-wrapper -->
     <div class="pedal-guide">表示されているアルファベットやスペースキーで演奏することもできます</div>
-
+  
 
 
 
@@ -280,7 +280,7 @@
     let audioCtx = null;
     let mainGainNode = null;
 
-    function initAudio() {
+    async function initAudio() {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             mainGainNode = audioCtx.createGain();
@@ -297,7 +297,7 @@
             compressor.connect(audioCtx.destination);
         }
         if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
+            await audioCtx.resume();
         }
     }
 
@@ -501,8 +501,8 @@
         noise.start(time); noise.stop(time + decay);
     }
 
-    function triggerInstrument(id) {
-        initAudio();
+    async function triggerInstrument(id) {
+        await initAudio();
         const now = audioCtx.currentTime;
         switch (id) {
             case 'bass-drum': playBassDrum(now); break;
@@ -525,9 +525,9 @@
     };
 
     document.querySelectorAll('.instrument').forEach(inst => {
-        const handler = (e) => {
+        const handler = async (e) => {
             e.preventDefault();
-            triggerInstrument(inst.id);
+            await triggerInstrument(inst.id);
             activeAnimation(inst);
         };
         inst.addEventListener('mousedown', handler);
@@ -562,11 +562,11 @@
         ' ': 'bass-drum'
     };
 
-    window.addEventListener('keydown', (e) => {
+    window.addEventListener('keydown', async (e) => {
         const targetId = keyMap[e.key];
         if (targetId) {
             const el = document.getElementById(targetId);
-            triggerInstrument(targetId);
+            await triggerInstrument(targetId);
             activeAnimation(el);
         }
     });
