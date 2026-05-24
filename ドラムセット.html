@@ -1,9 +1,9 @@
-<!--2026/5/23 OFがGeminiで作成-->
+<!--2026/5/23 古川がGeminiで作成-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>アコースティックドラムセット</title>
     <style>
         :root {
@@ -27,7 +27,7 @@
             color: #f8fafc;
             user-select: none;
             -webkit-user-select: none;
-            overflow-x: hidden; /* 横スクロールバーが出るのを防ぐ */
+            overflow: hidden;
         }
 
         header {
@@ -76,8 +76,6 @@
             align-items: center;
             transition: transform 0.04s ease-out;
             box-sizing: border-box;
-            /* スマホでタップしたときの青いハイライトを消す */
-            -webkit-tap-highlight-color: transparent;
         }
 
         .drum-shell {
@@ -165,40 +163,29 @@
         .pedal-guide {
             position: absolute;
             bottom: 5px;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 40%;
+            transform: translateX(-30%);
             background: rgba(255,255,255,0.05);
             padding: 8px 16px;
             border-radius: 30px;
             font-size: 0.8rem;
             color: #94a3b8;
             border: 1px solid rgba(255,255,255,0.1);
-            white-space: nowrap;
         }
 
-        /* ⬇️ スマートフォン・タブレット用の自動縮小設定を追加 ⬇️ */
-        @media (max-width: 860px) {
-            body {
-                justify-content: flex-start; /* スマホでは上詰めで綺麗に配置 */
-                padding-top: 20px;
-                overflow-y: auto; /* 縦のスクロールは許可 */
-            }
-            header {
-                margin-bottom: 20px;
-            }
-            .stage {
-                /* 画面幅（100vw）に合わせてドラムセット（横幅840px）をぴったり縮小 */
-                transform: scale(calc(100vw / 840 * 0.92)); 
-                transform-origin: center top; /* 上中央を基準に縮小 */
-                margin-bottom: -160px; /* 縮小によって下にできてしまう不要な空白をカット */
-            }
-            .pedal-guide {
-                display: none; /* キーボードの案内はスマホでは不要なため非表示に */
-            }
+        .stage-wrapper {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            overflow: hidden;
         }
-        /* ⬆️ ここまで ⬆️ */
     </style>
 </head>
+
+
+
+
+
 
 <body>
     <header>
@@ -206,7 +193,9 @@
         <div class="subtitle">ドラムセットを演奏してみよう！</div>
     </header>
 
+    <div class="stage-wrapper">
     <div class="stage">
+        <!-- シンバル類 -->
         <div id="crash-l" class="instrument cymbal-plate" data-key="w">
             <div class="label">Crash L<br><span class="key-hint">Q / W</span></div>
         </div>
@@ -217,6 +206,7 @@
             <div class="label">Ride<br><span class="key-hint">L / ;</span></div>
         </div>
         
+        <!-- ハイハット -->
         <div id="hihat-cl" class="instrument cymbal-plate" data-key="s">
             <div class="label">Hi-Hat [閉]<br><span class="key-hint">S</span></div>
         </div>
@@ -224,6 +214,7 @@
             <div class="label">Hi-Hat [開]<br><span class="key-hint">A</span></div>
         </div>
 
+        <!-- 太鼓類 -->
         <div id="bass-drum" class="instrument drum-shell" data-key=" ">
             <div class="label">BASS DRUM<br><span class="key-hint">SPACE</span></div>
         </div>
@@ -245,9 +236,36 @@
         </div>
 
         <div class="pedal-guide">表示されているアルファベットやスペースキーで演奏することもできます</div>
-    </div>
+    </div> <!-- end .stage -->
+    </div> <!-- end .stage-wrapper -->
+
+
+
+
+
+
 
 <script>
+    // スマートフォン対応：画面幅に合わせてステージをスケーリング
+    function scaleStage() {
+        const stage = document.querySelector('.stage');
+        const stageBaseWidth = 880;
+        const stageHeight = 520;
+        const availableWidth = window.innerWidth;
+        if (availableWidth < stageBaseWidth) {
+            const scale = availableWidth / stageBaseWidth;
+            stage.style.transform = `scale(${scale})`;
+            stage.style.transformOrigin = 'top center';
+            stage.style.marginBottom = `${(stageHeight * scale) - stageHeight}px`;
+        } else {
+            stage.style.transform = '';
+            stage.style.transformOrigin = '';
+            stage.style.marginBottom = '';
+        }
+    }
+    scaleStage();
+    window.addEventListener('resize', scaleStage);
+
     let audioCtx = null;
     let mainGainNode = null;
 
