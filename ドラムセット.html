@@ -1,4 +1,4 @@
-<!--2026/5/23 OFがGeminiで作成-->
+<!--2026/5/23 OFがGeminiで作成、Claudeで改良-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -58,7 +58,7 @@
         .stage {
             position: relative;
             width: 840px;
-            height: 520px;
+            height: 480px;
             background: rgba(15, 23, 42, 0.4);
             border-radius: 24px;
             box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.1);
@@ -161,10 +161,8 @@
         }
 
         .pedal-guide {
-            position: absolute;
-            bottom: 5px;
-            left: 50%;
-            transform: translateX(-50%);
+            margin-top: 0;
+            text-align: center;
             white-space: nowrap;
             background: rgba(255,255,255,0.05);
             padding: 8px 16px;
@@ -236,9 +234,9 @@
             <div class="label">Floor Tom<br><span class="key-hint">J / K</span></div>
         </div>
 
-        <div class="pedal-guide">表示されているアルファベットやスペースキーで演奏することもできます</div>
     </div> <!-- end .stage -->
     </div> <!-- end .stage-wrapper -->
+    <div class="pedal-guide">表示されているアルファベットやスペースキーで演奏することもできます</div>
 
 
 
@@ -252,13 +250,13 @@
         const stage = document.querySelector('.stage');
         const wrapper = document.querySelector('.stage-wrapper');
         const stageBaseWidth = 880;
-        const stageHeight = 520;
+        const stageHeight = 480;
         const availableWidth = window.innerWidth;
         if (availableWidth < stageBaseWidth) {
             const scale = availableWidth / stageBaseWidth;
             stage.style.transform = `scale(${scale})`;
             stage.style.transformOrigin = 'top left';
-            stage.style.marginBottom = `${(stageHeight * scale) - stageHeight}px`;
+            stage.style.marginBottom = `${(stageHeight * scale) - stageHeight + 8}px`;
             wrapper.style.justifyContent = 'flex-start';
         } else {
             stage.style.transform = '';
