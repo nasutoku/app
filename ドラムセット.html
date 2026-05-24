@@ -1,4 +1,4 @@
-<!--2026/5/23 OFがGeminiで作成、Claudeで改良-->
+<!--2026/5/23 古川がGeminiで作成-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -177,6 +177,13 @@
             justify-content: center;
             width: 100%;
             overflow: hidden;
+        }
+
+        @media (max-width: 880px) {
+            .pedal-guide {
+                font-size: calc(0.8rem * (100vw / 880px));
+                padding: calc(8px * (100vw / 880px)) calc(16px * (100vw / 880px));
+            }
         }
     </style>
 </head>
