@@ -3,7 +3,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>アコースティックドラムセット</title>
     <style>
         :root {
@@ -27,7 +27,7 @@
             color: #f8fafc;
             user-select: none;
             -webkit-user-select: none;
-            overflow: auto;
+            overflow-x: hidden; /* 横スクロールバーが出るのを防ぐ */
         }
 
         header {
@@ -76,6 +76,8 @@
             align-items: center;
             transition: transform 0.04s ease-out;
             box-sizing: border-box;
+            /* スマホでタップしたときの青いハイライトを消す */
+            -webkit-tap-highlight-color: transparent;
         }
 
         .drum-shell {
@@ -163,33 +165,40 @@
         .pedal-guide {
             position: absolute;
             bottom: 5px;
-            left: 40%;
-            transform: translateX(-30%);
+            left: 50%;
+            transform: translateX(-50%);
             background: rgba(255,255,255,0.05);
             padding: 8px 16px;
             border-radius: 30px;
             font-size: 0.8rem;
             color: #94a3b8;
             border: 1px solid rgba(255,255,255,0.1);
-    
-     
-
-.stage {
-  width: 95vw;
-  height: calc(95vw * 520 / 840);
-  max-width: 840px;
-  max-height: 520px;
-}
-
-      
+            white-space: nowrap;
         }
+
+        /* ⬇️ スマートフォン・タブレット用の自動縮小設定を追加 ⬇️ */
+        @media (max-width: 860px) {
+            body {
+                justify-content: flex-start; /* スマホでは上詰めで綺麗に配置 */
+                padding-top: 20px;
+                overflow-y: auto; /* 縦のスクロールは許可 */
+            }
+            header {
+                margin-bottom: 20px;
+            }
+            .stage {
+                /* 画面幅（100vw）に合わせてドラムセット（横幅840px）をぴったり縮小 */
+                transform: scale(calc(100vw / 840 * 0.92)); 
+                transform-origin: center top; /* 上中央を基準に縮小 */
+                margin-bottom: -160px; /* 縮小によって下にできてしまう不要な空白をカット */
+            }
+            .pedal-guide {
+                display: none; /* キーボードの案内はスマホでは不要なため非表示に */
+            }
+        }
+        /* ⬆️ ここまで ⬆️ */
     </style>
 </head>
-
-
-
-
-
 
 <body>
     <header>
@@ -198,7 +207,6 @@
     </header>
 
     <div class="stage">
-        <!-- シンバル類 -->
         <div id="crash-l" class="instrument cymbal-plate" data-key="w">
             <div class="label">Crash L<br><span class="key-hint">Q / W</span></div>
         </div>
@@ -209,7 +217,6 @@
             <div class="label">Ride<br><span class="key-hint">L / ;</span></div>
         </div>
         
-        <!-- ハイハット -->
         <div id="hihat-cl" class="instrument cymbal-plate" data-key="s">
             <div class="label">Hi-Hat [閉]<br><span class="key-hint">S</span></div>
         </div>
@@ -217,7 +224,6 @@
             <div class="label">Hi-Hat [開]<br><span class="key-hint">A</span></div>
         </div>
 
-        <!-- 太鼓類 -->
         <div id="bass-drum" class="instrument drum-shell" data-key=" ">
             <div class="label">BASS DRUM<br><span class="key-hint">SPACE</span></div>
         </div>
@@ -240,12 +246,6 @@
 
         <div class="pedal-guide">表示されているアルファベットやスペースキーで演奏することもできます</div>
     </div>
-
-
-
-
-
-
 
 <script>
     let audioCtx = null;
