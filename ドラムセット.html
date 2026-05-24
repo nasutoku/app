@@ -1,4 +1,4 @@
-<!--2026/5/23 古川がGeminiで作成-->
+<!--2026/5/23 OFがGeminiで作成-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -189,7 +189,7 @@
 
 <body>
     <header>
-        <h1>NATOKU ACOUSTIC DRUM SET</h1>
+        <h1>NATOKU DRUM SET</h1>
         <div class="subtitle">ドラムセットを演奏してみよう！</div>
     </header>
 
@@ -249,18 +249,21 @@
     // スマートフォン対応：画面幅に合わせてステージをスケーリング
     function scaleStage() {
         const stage = document.querySelector('.stage');
+        const wrapper = document.querySelector('.stage-wrapper');
         const stageBaseWidth = 880;
         const stageHeight = 520;
         const availableWidth = window.innerWidth;
         if (availableWidth < stageBaseWidth) {
             const scale = availableWidth / stageBaseWidth;
             stage.style.transform = `scale(${scale})`;
-            stage.style.transformOrigin = 'top center';
+            stage.style.transformOrigin = 'top left';
             stage.style.marginBottom = `${(stageHeight * scale) - stageHeight}px`;
+            wrapper.style.justifyContent = 'flex-start';
         } else {
             stage.style.transform = '';
             stage.style.transformOrigin = '';
             stage.style.marginBottom = '';
+            wrapper.style.justifyContent = 'center';
         }
     }
     scaleStage();
