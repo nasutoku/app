@@ -1,4 +1,4 @@
-<!--2026/5/23 古川がClaudeで作成-->
+<!--2026/5/30 古川がClaudeで作成-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -424,7 +424,7 @@
 <div class="container">
   <div class="header">
     <h1>なとくピアノ</h1>
-    <p class="subtitle">2 Octaves · C4 to C6</p>
+    <p class="subtitle">2+ Octaves · C4 to E6</p>
   </div>
 
   <div class="piano-scale-root" id="pianoScaleRoot">
@@ -464,7 +464,7 @@
     <button class="sustain-btn" id="sustain-btn">Sus</button>
   </div>
 
-  <p class="kb-hint">クリック・タップで演奏 · keyboard: A S D F G H J K L ; ' Z X C V B N M , . /</p>
+  <p class="kb-hint">クリック・タップで演奏 · keyboard: A S D F G H J K L ; ' Z X C V B N · 黒鍵: W E T Y U I O [ ] \ M ,</p>
 </div>
 
 <script>
@@ -620,8 +620,10 @@ const WHITE_NOTES = [
   { id: 'G5', label: 'ソ', eng: 'G', freq: 783.99 },
   { id: 'A5', label: 'ラ', eng: 'A', freq: 880.00 },
   { id: 'B5', label: 'シ', eng: 'B', freq: 987.77 },
-  // Top C
+  // Octave 6 (C6 to E6)
   { id: 'C6', label: 'ド', eng: 'C', freq: 1046.50 },
+  { id: 'D6', label: 'レ', eng: 'D', freq: 1174.66 },
+  { id: 'E6', label: 'ミ', eng: 'E', freq: 1318.51 },
 ];
 
 const BLACK_NOTES = [
@@ -635,14 +637,17 @@ const BLACK_NOTES = [
   { id: 'Fs5', label: 'ファ♯', flat: 'ソ♭', freq: 739.99, after: 'F5' },
   { id: 'Gs5', label: 'ソ♯', flat: 'ラ♭', freq: 830.61, after: 'G5' },
   { id: 'As5', label: 'ラ♯', flat: 'シ♭', freq: 932.33, after: 'A5' },
+  { id: 'Cs6', label: 'ド♯', flat: 'レ♭', freq: 1108.73, after: 'C6' },
+  { id: 'Ds6', label: 'レ♯', flat: 'ミ♭', freq: 1244.51, after: 'D6' },
 ];
 
 const KB_MAP = {
   'a': 'C4', 's': 'D4', 'd': 'E4', 'f': 'F4', 'g': 'G4', 'h': 'A4', 'j': 'B4',
   'k': 'C5', 'l': 'D5', ';': 'E5', "'": 'F5',
-  'z': 'G5', 'x': 'A5', 'c': 'B5', 'v': 'C6',
+  'z': 'G5', 'x': 'A5', 'c': 'B5', 'v': 'C6', 'b': 'D6', 'n': 'E6',
   'w': 'Cs4', 'e': 'Ds4', 't': 'Fs4', 'y': 'Gs4', 'u': 'As4',
   'i': 'Cs5', 'o': 'Ds5', '[': 'Fs5', ']': 'Gs5', '\\': 'As5',
+  'm': 'Cs6', ',': 'Ds6',
 };
 
 const noteDisplay = document.getElementById('note-display');
@@ -776,8 +781,8 @@ sustainBtn.addEventListener('click', () => {
 });
 
 // ---- レスポンシブ スケーリング ----
-// 鍵盤の自然な横幅: 白鍵15枚 × 53px = 795px、シェルのpadding 64px = 約860px
-const PIANO_NATURAL_W = 860;
+// 鍵盤の自然な横幅: 白鍵17枚 × 53px = 901px、シェルのpadding 64px = 約965px
+const PIANO_NATURAL_W = 965;
 
 function scalePiano() {
   const root = document.getElementById('pianoScaleRoot');
