@@ -1,4 +1,4 @@
-<!--2026/5/23 OFがClaudeで作成-->
+<!--2026/5/23 古川がClaudeで作成-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -464,7 +464,7 @@
     <button class="sustain-btn" id="sustain-btn">Sus</button>
   </div>
 
-  <p class="kb-hint">クリック・タップで演奏 · keyboard: A S D F G H J K L ; ' Z X C V B N · 黒鍵: W E T Y U I O [ ] \ M ,</p>
+  <p class="kb-hint">白鍵: Z X C V B N M / Q W E R T Y U / I O P　黒鍵: S D G H J / 2 3 5 6 7 / 9 0</p>
 </div>
 
 <script>
@@ -642,9 +642,11 @@ const BLACK_NOTES = [
 ];
 
 const KB_MAP = {
-  'z': 'C4', 'x': 'D4', 'c': 'E4', 'v': 'F4', 'b': 'G4', 'b': 'A4', 'n': 'B4',
-  'q': 'C5', 'w': 'D5', 'e': 'E5', "r": 'F5',
-  't': 'G5', 'y': 'A5', 'u': 'B5', 'i': 'C6', 'i': 'D6', 'o': 'E6',
+  // 白鍵: z x c v b n m q w e r t y u i o p → C4〜E6
+  'z': 'C4', 'x': 'D4', 'c': 'E4', 'v': 'F4', 'b': 'G4', 'n': 'A4', 'm': 'B4',
+  'q': 'C5', 'w': 'D5', 'e': 'E5', 'r': 'F5', 't': 'G5', 'y': 'A5', 'u': 'B5',
+  'i': 'C6', 'o': 'D6', 'p': 'E6',
+  // 黒鍵: s d g h j 2 3 5 6 7 9 0 → C♯4〜D♯6
   's': 'Cs4', 'd': 'Ds4', 'g': 'Fs4', 'h': 'Gs4', 'j': 'As4',
   '2': 'Cs5', '3': 'Ds5', '5': 'Fs5', '6': 'Gs5', '7': 'As5',
   '9': 'Cs6', '0': 'Ds6',
