@@ -63,7 +63,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .question-text .op-sym{color:var(--coral);padding:0 5px;}
 
 /* 横並び（並列）用のコンテナ */
-.qa-row-wrap {display:flex;align-items:center;gap:6px;width:100%;}
+.qa-row-wrap {display:flex;align-items:center;gap:6px;width:100%;max-width:100%;margin:0 auto;}
 .qa-row-wrap .question-card {display:flex;flex:1.4;height:50px;padding:0 8px;border-radius:10px;box-shadow:none;background:#f4f9ff;align-items:center;justify-content:center;}
 .qa-row-wrap .question-text {font-size:26px;}
 .qa-row-wrap .eq-separator {font-family:'Nunito',sans-serif;font-size:24px;font-weight:900;color:var(--purple);display:flex;align-items:center;}
@@ -77,11 +77,20 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .answer-display.correct{border-color:var(--green);}
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}60%{transform:translateX(7px)}}
 
-/* 数字パッド */
-.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;}
-.num-btn{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;padding:7px 0;
-  border-radius:9px;border:2px solid;cursor:pointer;transition:transform .1s,box-shadow .1s;user-select:none;box-shadow:0 3px 0;}
-.num-btn:active{transform:translateY(3px);box-shadow:0 0 0!important;}
+/* 🔢 数字パッドの配置コンテナ */
+.numpad-container {width:100%;display:flex;justify-content:center;}
+.numpad{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;width:100%;}
+
+/* 全ボタン共通のベーススタイル（高さを揃える） */
+.num-btn, .clear-btn, .answer-btn {
+  font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;padding:7px 0;
+  border-radius:9px;border:2px solid;cursor:pointer;transition:transform .1s,box-shadow .1s;user-select:none;box-shadow:0 3px 0;
+  display:flex;align-items:center;justify-content:center;height:42px; /* 高さを一律固定 */
+}
+.num-btn:active, .clear-btn:active, .answer-btn:active{transform:translateY(3px);box-shadow:0 0 0!important;}
+
+/* 1〜9, 0 ボタン */
+.grid-num { grid-column: span 2; }
 .n0{background:#E6F1FB;border-color:#B5D4F4;color:#0C447C;box-shadow:0 3px 0 #85B7EB;}
 .n1{background:#EAF3DE;border-color:#C0DD97;color:#27500A;box-shadow:0 3px 0 #97C459;}
 .n2{background:#FBEAF0;border-color:#F4C0D1;color:#72243E;box-shadow:0 3px 0 #ED93B1;}
@@ -92,14 +101,21 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .n7{background:#E6F1FB;border-color:#85B7EB;color:#0C447C;box-shadow:0 3px 0 #378ADD;}
 .n8{background:#EAF3DE;border-color:#97C459;color:#27500A;box-shadow:0 3px 0 #639922;}
 .n9{background:#FBEAF0;border-color:#ED93B1;color:#72243E;box-shadow:0 3px 0 #D4537E;}
-.clear-btn{font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;padding:7px;
-  border-radius:9px;border:2px solid #F7C1C1;background:#FCEBEB;color:#A32D2D;cursor:pointer;
-  box-shadow:0 3px 0 #F09595;transition:transform .1s,box-shadow .1s;}
-.clear-btn:active{transform:translateY(3px);box-shadow:0 0 0!important;}
-.answer-btn{font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;padding:12px 8px;
-  border-radius:9px;border:2px solid var(--darkgreen);background:var(--green);color:#fff;cursor:pointer;
-  box-shadow:0 3px 0 var(--darkgreen);transition:transform .1s,box-shadow .1s;}
-.answer-btn:active{transform:translateY(3px);box-shadow:0 0 0!important;}
+
+/* 0の配置調整 */
+.grid-0 { grid-column: span 3; }
+/* クリアボタンの配置調整 */
+.grid-clear {
+  grid-column: span 3; font-family:'Kosugi Maru',sans-serif;font-size:14px;
+  border-color:#F7C1C1;background:#FCEBEB;color:#A32D2D;box-shadow:0 3px 0 #F09595;
+}
+
+/* こたえるボタン */
+.grid-ans {
+  grid-column: span 6; font-family:'Kosugi Maru',sans-serif;font-size:15px;
+  border-color: var(--darkgreen);background:var(--green);color:#fff;box-shadow:0 3px 0 var(--darkgreen);
+}
+
 .start-btn{font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;padding:12px 32px;
   border-radius:12px;border:none;background:linear-gradient(135deg,var(--blue),var(--green));color:#fff;
   cursor:pointer;box-shadow:0 4px 0 var(--darkblue);transition:transform .1s,box-shadow .1s;display:block;margin:0 auto;}
@@ -151,14 +167,13 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 ======================================================= */
 @media screen and (max-width: 768px) {
   .app-wrap {
-    flex-direction: column; /* 上下並びにする */
+    flex-direction: column;
   }
   
-  /* 上側パネル（計算問題エリア） */
   .left-panel {
     width: 100%;
     min-width: 100%;
-    height: 60vh; /* 画面全体の約60%の高さに収める */
+    height: 60vh;
     flex: none;
     padding: 4px;
     gap: 3px;
@@ -166,20 +181,18 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     border-bottom: 2px solid var(--border);
   }
 
-  /* タイトルを一行で超コンパクトに */
   .app-title {
     font-size: 13px;
     padding: 2px;
     border-radius: 6px;
   }
 
-  /* 設定カード内の要素を横一列に並べて高さを極限まで縮める */
   .settings-card {
     padding: 4px 6px;
     border-radius: 8px;
   }
   .op-label {
-    display: none; /* 「けいさんの種類（1つえらぼう）：」の文字を消して節約 */
+    display: none;
   }
   .op-row {
     margin-bottom: 4px;
@@ -188,7 +201,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
   .op-btn {
     font-size: 15px;
     padding: 0;
-    height: 26px; /* ボタンを細く */
+    height: 26px;
     border-radius: 6px;
   }
   .settings-row {
@@ -208,10 +221,9 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     margin-top: 2px;
     padding-top: 2px;
     display: inline-flex;
-    border-top: none; /* 線を消して横並びにしやすく */
+    border-top: none;
   }
 
-  /* スコアエリアのコンパクト化 */
   .score-bar {
     font-size: 11px;
   }
@@ -219,7 +231,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
   .score-val { font-size: 15px; }
   .progress-wrap { height: 5px; margin-top: 2px; }
 
-  /* ゲーム中の問題エリア・ボタンのサイズ調整（画面内に絶対収める） */
   .qa-row-wrap { gap: 4px; }
   .qa-row-wrap .question-card {
     height: 36px;
@@ -236,34 +247,28 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     font-size: 18px;
     border-radius: 6px;
   }
+
+  /* スマホでのボタン高さを一律で均一化 */
   .numpad {
     gap: 3px;
   }
-  .numpad .num-btn {
-    padding: 3px 0;
-    font-size: 16px;
+  .num-btn, .clear-btn, .answer-btn {
+    height: 32px; /* スマホ用に一律低く固定 */
+    font-size: 15px;
     border-radius: 6px;
     box-shadow: 0 2px 0;
   }
-  .numpad .num-btn:active {
+  .num-btn:active, .clear-btn:active, .answer-btn:active {
     transform: translateY(2px);
   }
-  .clear-btn {
-    padding: 3px;
+  .grid-clear {
     font-size: 12px;
-    border-radius: 6px;
     box-shadow: 0 2px 0 #F09595;
   }
-  .clear-btn:active { transform: translateY(2px); }
-  
-  .answer-btn {
-    padding: 6px;
+  .grid-ans {
     font-size: 13px;
-    border-radius: 6px;
     box-shadow: 0 2px 0 var(--darkgreen);
-    margin-top: 2px;
   }
-  .answer-btn:active { transform: translateY(2px); }
 
   .intro-area {
     margin-top: 0;
@@ -281,7 +286,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
   }
   .start-btn:active { transform: translateY(2px); }
 
-  /* 下側パネル（ひっ算エリア）を残りの40%に固定 */
   .right-panel {
     height: 40vh;
     flex: none; 
@@ -323,7 +327,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     border-radius: 4px;
   }
   
-  /* 結果表示のスクロール対応 */
   .result-card {
     padding: 6px;
     border-radius: 10px;
@@ -370,8 +373,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
         </div>
         <div class="setting-group">
           <select id="dig2">
-            <option value="1">1</option>
-            <option value="2" selected>2</option>
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
             <option value="3">3</option>
           </select>
           <label>けた の けいさん</label>
@@ -636,8 +639,9 @@ function nextQuestion(){
   document.getElementById('scoreVal').textContent=`${score}点`;
   const opMap={'+':'＋','-':'－','×':'×','÷':'÷'};
 
-  document.getElementById('mainArea').innerHTML=`
-    <div style="display:flex;flex-direction:column;gap:3px;height:100%;justify-content:space-between;">
+  /* 問題欄とテンキーの上下を隙間なく密着させる構造 */
+  document.getElementById('mainArea').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:12px;width:100%;padding:4px 0;">
       
       <div class="qa-row-wrap">
         <div class="question-card" style="display: flex;">
@@ -649,18 +653,31 @@ function nextQuestion(){
         <div class="answer-display" id="ansDisp">？</div>
       </div>
 
-      <div class="numpad">
-        ${[7,8,9,4,5,6,1,2,3].map(n=>`<button class="num-btn n${n}" onclick="addDigit('${n}')">${n}</button>`).join('')}
+      <div class="numpad-container">
+        <div class="numpad">
+          <button class="num-btn grid-num n7" onclick="addDigit('7')">7</button>
+          <button class="num-btn grid-num n8" onclick="addDigit('8')">8</button>
+          <button class="num-btn grid-num n9" onclick="addDigit('9')">9</button>
+          
+          <button class="num-btn grid-num n4" onclick="addDigit('4')">4</button>
+          <button class="num-btn grid-num n5" onclick="addDigit('5')">5</button>
+          <button class="num-btn grid-num n6" onclick="addDigit('6')">6</button>
+          
+          <button class="num-btn grid-num n1" onclick="addDigit('1')">1</button>
+          <button class="num-btn grid-num n2" onclick="addDigit('2')">2</button>
+          <button class="num-btn grid-num n3" onclick="addDigit('3')">3</button>
+          
+          <button class="num-btn grid-0 n0" onclick="addDigit('0')">0</button>
+          <button class="clear-btn grid-clear" onclick="clearAns()">⌫ クリア</button>
+          
+          <button class="answer-btn grid-ans" onclick="submitAnswer()">こたえる！✓</button>
+        </div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
-        <button class="num-btn n0" style="border-radius:6px;font-size:16px;font-weight:800;padding:3px 0;border:2px solid #B5D4F4;background:#E6F1FB;color:#0C447C;box-shadow:0 2px 0 #85B7EB;cursor:pointer;" onclick="addDigit('0')">0</button>
-        <button class="clear-btn" onclick="clearAns()">⌫ クリア</button>
-      </div>
-      <button class="answer-btn" onclick="submitAnswer()">こたえる！ ✓</button>
+
     </div>
   `;
   const ma=document.getElementById('mainArea');
-  ma.style.flex='1';ma.style.overflow='hidden';ma.style.justifyContent='';
+  ma.style.flex='1';ma.style.overflow='hidden';ma.style.justifyContent='flex-start';
   
   setTimeout(resizeCanvas, 50);
 }
@@ -727,7 +744,7 @@ function spawnConfetti(){
     const c=document.createElement('div');
     const col=colors[Math.floor(Math.random()*colors.length)];
     const x=Math.random()*100,size=Math.random()*10+6,dur=Math.random()*700+500;
-    c.style.cssText=`position:absolute;left:${x}%;top:-20px;width:${size}px;height:${size}px;background:${col};border-radius:${Math.random()>.5?'50%':'2px'};animation:fall ${dur}ms linear forwards;`;
+    c.style.cssText = 'position:absolute;left:' + x + '%;top:-20px;width:' + size + 'px;height:' + size + 'px;background:' + col + ';border-radius:' + (Math.random()>.5?'50%':'2px') + ';animation:fall ' + dur + 'ms linear forwards;';
     wrap.appendChild(c);
   }
   setTimeout(()=>wrap.innerHTML='',1400);
