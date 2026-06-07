@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>なとくけいさんれんしゅう！</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght=700;800;900&family=Kosugi+Maru&display=swap" rel="stylesheet">
 <style>
@@ -11,13 +11,13 @@
   --sky:#e8f4fd;--blue:#378ADD;--darkblue:#185FA5;--green:#1D9E75;--darkgreen:#0F6E56;
   --red:#E24B4A;--amber:#EF9F27;--purple:#7F77DD;--coral:#D85A30;--pink:#D4537E;
   --card:#fff;--border:#c8dff5;--text:#1a2d45;--muted:#5a7a9a;}
-html,body{height:100%;overflow:hidden;}
+html,body{height:100%;overflow:hidden;position:fixed;width:100%;}
 body{font-family:'Kosugi Maru',sans-serif;background:var(--sky);}
 body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,#b5d4f460 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none;z-index:0;}
 
 .app-wrap{display:flex;height:100vh;position:relative;z-index:1;}
 
-/* ===== LEFT PANEL ===== */
+/* ===== LEFT PANEL (PC基準) ===== */
 .left-panel{width:360px;min-width:320px;display:flex;flex-direction:column;padding:4px;gap:4px;overflow:hidden;height:100vh;}
 
 /* タイトル */
@@ -61,7 +61,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .q-hint{font-size:11px;color:var(--muted);margin-bottom:4px;}
 .question-text{font-family:'Nunito',sans-serif;font-size:30px;font-weight:900;color:var(--text);letter-spacing:1px;}
 .question-text .op-sym{color:var(--coral);padding:0 5px;}
-.question-text .eq darkness{color:var(--purple);padding:0 5px;}
 
 /* 横並び（並列）用のコンテナ */
 .qa-row-wrap {display:flex;align-items:center;gap:6px;width:100%;}
@@ -120,7 +119,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .badge-ok{color:var(--green);font-weight:700;}
 .badge-ng{color:var(--red);font-weight:700;}
 
-/* ===== RIGHT PANEL ===== */
+/* ===== RIGHT PANEL (PC基準) ===== */
 .right-panel{flex:1;background:#fffef5;border-left:2.5px dashed #b0d0e8;display:flex;flex-direction:column;overflow:hidden;}
 .hissan-header{background:linear-gradient(135deg,#fffbe6,#fff9d0);padding:8px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1.5px dashed #d0c060;}
 .hissan-title{font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;color:#8a6a00;display:flex;align-items:center;gap:5px;}
@@ -146,6 +145,202 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .praise-text.show{opacity:1;transform:scale(1) rotate(0deg);}
 .praise-text.hide{opacity:0;transform:scale(1.5) translateY(-60px);}
 @keyframes fall{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(110vh) rotate(720deg)}}
+
+/* =======================================================
+   📱 スマートフォン用のスタイル（縦画面を徹底最適化）
+======================================================= */
+@media screen and (max-width: 768px) {
+  .app-wrap {
+    flex-direction: column; /* 上下並びにする */
+  }
+  
+  /* 上側パネル（計算問題エリア） */
+  .left-panel {
+    width: 100%;
+    min-width: 100%;
+    height: 60vh; /* 画面全体の約60%の高さに収める */
+    flex: none;
+    padding: 4px;
+    gap: 3px;
+    background: var(--sky);
+    border-bottom: 2px solid var(--border);
+  }
+
+  /* タイトルを一行で超コンパクトに */
+  .app-title {
+    font-size: 13px;
+    padding: 2px;
+    border-radius: 6px;
+  }
+
+  /* 設定カード内の要素を横一列に並べて高さを極限まで縮める */
+  .settings-card {
+    padding: 4px 6px;
+    border-radius: 8px;
+  }
+  .op-label {
+    display: none; /* 「けいさんの種類（1つえらぼう）：」の文字を消して節約 */
+  }
+  .op-row {
+    margin-bottom: 4px;
+    gap: 4px;
+  }
+  .op-btn {
+    font-size: 15px;
+    padding: 0;
+    height: 26px; /* ボタンを細く */
+    border-radius: 6px;
+  }
+  .settings-row {
+    margin-bottom: 0;
+    display: inline-flex;
+    gap: 6px;
+  }
+  .setting-group {
+    font-size: 11px;
+  }
+  .setting-group select {
+    font-size: 11px;
+    padding: 1px 4px;
+    border-radius: 4px;
+  }
+  .detail-settings {
+    margin-top: 2px;
+    padding-top: 2px;
+    display: inline-flex;
+    border-top: none; /* 線を消して横並びにしやすく */
+  }
+
+  /* スコアエリアのコンパクト化 */
+  .score-bar {
+    font-size: 11px;
+  }
+  .q-label { font-size: 11px; }
+  .score-val { font-size: 15px; }
+  .progress-wrap { height: 5px; margin-top: 2px; }
+
+  /* ゲーム中の問題エリア・ボタンのサイズ調整（画面内に絶対収める） */
+  .qa-row-wrap { gap: 4px; }
+  .qa-row-wrap .question-card {
+    height: 36px;
+    border-radius: 6px;
+  }
+  .qa-row-wrap .question-text {
+    font-size: 18px;
+  }
+  .qa-row-wrap .eq-separator {
+    font-size: 18px;
+  }
+  .answer-display {
+    height: 36px;
+    font-size: 18px;
+    border-radius: 6px;
+  }
+  .numpad {
+    gap: 3px;
+  }
+  .numpad .num-btn {
+    padding: 3px 0;
+    font-size: 16px;
+    border-radius: 6px;
+    box-shadow: 0 2px 0;
+  }
+  .numpad .num-btn:active {
+    transform: translateY(2px);
+  }
+  .clear-btn {
+    padding: 3px;
+    font-size: 12px;
+    border-radius: 6px;
+    box-shadow: 0 2px 0 #F09595;
+  }
+  .clear-btn:active { transform: translateY(2px); }
+  
+  .answer-btn {
+    padding: 6px;
+    font-size: 13px;
+    border-radius: 6px;
+    box-shadow: 0 2px 0 var(--darkgreen);
+    margin-top: 2px;
+  }
+  .answer-btn:active { transform: translateY(2px); }
+
+  .intro-area {
+    margin-top: 0;
+    padding: 4px 0;
+  }
+  .intro-area p {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+  .start-btn {
+    padding: 6px 18px;
+    font-size: 14px;
+    border-radius: 8px;
+    box-shadow: 0 2px 0 var(--darkblue);
+  }
+  .start-btn:active { transform: translateY(2px); }
+
+  /* 下側パネル（ひっ算エリア）を残りの40%に固定 */
+  .right-panel {
+    height: 40vh;
+    flex: none; 
+    border-left: none;
+    border-top: 2px dashed #b0d0e8;
+    background: #fffef5;
+  }
+  .hissan-header {
+    padding: 2px 8px;
+  }
+  .hissan-title {
+    font-size: 11px;
+  }
+  .hissan-btn {
+    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  .pen-toolbar {
+    padding: 2px 8px;
+    gap: 4px;
+  }
+  .pen-label {
+    font-size: 10px;
+  }
+  .color-pick {
+    width: 16px;
+    height: 16px;
+    border-width: 1.5px;
+  }
+  .size-btn {
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  .eraser-btn {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  
+  /* 結果表示のスクロール対応 */
+  .result-card {
+    padding: 6px;
+    border-radius: 10px;
+  }
+  .result-score {
+    font-size: 32px;
+  }
+  .result-msg {
+    font-size: 12px;
+    margin: 4px 0;
+  }
+  .result-list {
+    max-height: 70px;
+    padding: 4px 8px;
+    margin-bottom: 6px;
+  }
+}
 </style>
 </head>
 <body>
@@ -175,8 +370,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
         </div>
         <div class="setting-group">
           <select id="dig2">
-            <option value="1" selected>1</option>
-            <option value="2"></option>
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
             <option value="3">3</option>
           </select>
           <label>けた の けいさん</label>
@@ -205,7 +400,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 
     <div id="mainArea" style="flex:1;display:flex;flex-direction:column;justify-content:center;overflow:hidden;">
       <div class="intro-area">
-        <p>けいさんの種類をえらんで<br>スタートをおそう！<br>右のスペースでひっ算もできるよ ✏️</p>
+        <p>けいさんの種類をえらんで<br>スタートをおそう！<br>下のスペースでひっ算もできるよ ✏️</p>
         <button class="start-btn" onclick="startGame()">▶ スタート！</button>
       </div>
     </div>
@@ -272,13 +467,12 @@ let qNum=0,score=0,answer='',selectedOp='+',currentQ=null,gameActive=false,histo
 const praises=['すごい！🌟','やったね！🎉','かんぺき！✨','さいこう！🏆','ばっちり！🌈',
   'よくできました！⭐','すばらしい！💫','天才！🎊','パーフェクト！💥','おみごと！🎯'];
 
-// 演算子に応じて詳細設定の有効・無効を切り替える関数
 function updateDetailSettingsState() {
   const kurisSelect = document.getElementById('kuris');
   const group = document.getElementById('kuriSettingGroup');
   
   if (selectedOp === '÷') {
-    kurisSelect.value = 'any'; // 割り算の場合は強制的に「気にしない」にする
+    kurisSelect.value = 'any';
     kurisSelect.disabled = true;
     group.classList.add('disabled-style');
   } else {
@@ -287,17 +481,13 @@ function updateDetailSettingsState() {
   }
 }
 
-// 計算の種類ボタンが押されたとき
 document.getElementById('opRow').querySelectorAll('.op-btn').forEach(b=>{
   b.addEventListener('click',()=>{
     document.querySelectorAll('.op-btn').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
     selectedOp=b.dataset.op;
     playClick();
-    
-    // 割り算判定のUI更新
     updateDetailSettingsState();
-    
     if (gameActive) {
       qNum--; 
       nextQuestion();
@@ -305,7 +495,6 @@ document.getElementById('opRow').querySelectorAll('.op-btn').forEach(b=>{
   });
 });
 
-// けた・くり上がりの設定が変更されたとき
 ['dig1', 'dig2', 'kuris'].forEach(id => {
   document.getElementById(id).addEventListener('change', () => {
     if (gameActive) {
@@ -319,7 +508,6 @@ function getRand(digits){
   return Math.floor(Math.random()*(Math.pow(10,digits)-Math.pow(10,digits-1)))+Math.pow(10,digits-1);
 }
 
-// くり上がり・くり下がり判定関数
 function checkKuri(a, b, op) {
   if (op === '+') {
     let strA = String(a).split('').reverse();
@@ -449,7 +637,7 @@ function nextQuestion(){
   const opMap={'+':'＋','-':'－','×':'×','÷':'÷'};
 
   document.getElementById('mainArea').innerHTML=`
-    <div style="display:flex;flex-direction:column;gap:5px;height:100%;">
+    <div style="display:flex;flex-direction:column;gap:3px;height:100%;justify-content:space-between;">
       
       <div class="qa-row-wrap">
         <div class="question-card" style="display: flex;">
@@ -464,8 +652,8 @@ function nextQuestion(){
       <div class="numpad">
         ${[7,8,9,4,5,6,1,2,3].map(n=>`<button class="num-btn n${n}" onclick="addDigit('${n}')">${n}</button>`).join('')}
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
-        <button class="num-btn n0" style="border-radius:9px;font-size:20px;font-weight:800;padding:7px 0;border:2px solid #B5D4F4;background:#E6F1FB;color:#0C447C;box-shadow:0 3px 0 #85B7EB;cursor:pointer;" onclick="addDigit('0')">0</button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
+        <button class="num-btn n0" style="border-radius:6px;font-size:16px;font-weight:800;padding:3px 0;border:2px solid #B5D4F4;background:#E6F1FB;color:#0C447C;box-shadow:0 2px 0 #85B7EB;cursor:pointer;" onclick="addDigit('0')">0</button>
         <button class="clear-btn" onclick="clearAns()">⌫ クリア</button>
       </div>
       <button class="answer-btn" onclick="submitAnswer()">こたえる！ ✓</button>
@@ -473,6 +661,8 @@ function nextQuestion(){
   `;
   const ma=document.getElementById('mainArea');
   ma.style.flex='1';ma.style.overflow='hidden';ma.style.justifyContent='';
+  
+  setTimeout(resizeCanvas, 50);
 }
 
 function updateProgress(){
@@ -562,8 +752,8 @@ function showResult(){
   document.getElementById('mainArea').innerHTML=`
     <div class="result-card">
       <div class="result-sub">10問のけっか</div>
-      <div class="result-score">${score}<span style="font-size:28px">点</span></div>
-      <div style="font-size:32px;margin:4px 0;">${emoji}</div>
+      <div class="result-score">${score}<span style="font-size:20px">点</span></div>
+      <div style="font-size:24px;margin:2px 0;">${emoji}</div>
       <div class="result-msg">${msg}</div>
       <div class="result-list">${rows}</div>
       <button class="start-btn" onclick="startGame()">▶ もう一度！</button>
@@ -639,10 +829,10 @@ function toggleEraser(){
   document.getElementById('eraserBtn').classList.toggle('sel',erasing);playClick();
 }
 
-// 起動時の初期化チェック
 updateDetailSettingsState();
 
 window.addEventListener('resize',resizeCanvas);
+window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 200));
 resizeCanvas();
 </script>
 </body>
