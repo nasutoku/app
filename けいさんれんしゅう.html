@@ -34,6 +34,10 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 /* 詳細設定エリア */
 .detail-settings{border-top:1px dashed var(--border);padding-top:6px;margin-top:8px;display:flex;flex-direction:column;gap:8px;}
 
+/* グレーアウト時のスタイル設定 */
+.setting-group.disabled-style {opacity: 0.55; pointer-events: none;}
+.setting-group select:disabled {background: #f0f0f0; border-color: #ccc; color: #888; cursor: not-allowed;}
+
 .op-label{font-size:12px;color:var(--muted);margin:0 0 4px;font-weight:bold;}
 .op-row{display:flex;gap:5px;margin-bottom:10px;}
 .op-btn{font-family:'Nunito',sans-serif;font-size:20px;font-weight:900;padding:2px 0;width:54px;border-radius:9px;
@@ -180,7 +184,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
       </div>
 
       <div class="detail-settings">
-        <div class="setting-group">
+        <div class="setting-group" id="kuriSettingGroup">
           <label for="kuris">くり上がり・くり下がり：</label>
           <select id="kuris">
             <option value="any" selected>気にしない</option>
@@ -268,6 +272,21 @@ let qNum=0,score=0,answer='',selectedOp='+',currentQ=null,gameActive=false,histo
 const praises=['すごい！🌟','やったね！🎉','かんぺき！✨','さいこう！🏆','ばっちり！🌈',
   'よくできました！⭐','すばらしい！💫','天才！🎊','パーフェクト！💥','おみごと！🎯'];
 
+// 演算子に応じて詳細設定の有効・無効を切り替える関数
+function updateDetailSettingsState() {
+  const kurisSelect = document.getElementById('kuris');
+  const group = document.getElementById('kuriSettingGroup');
+  
+  if (selectedOp === '÷') {
+    kurisSelect.value = 'any'; // 割り算の場合は強制的に「気にしない」にする
+    kurisSelect.disabled = true;
+    group.classList.add('disabled-style');
+  } else {
+    kurisSelect.disabled = false;
+    group.classList.remove('disabled-style');
+  }
+}
+
 // 計算の種類ボタンが押されたとき
 document.getElementById('opRow').querySelectorAll('.op-btn').forEach(b=>{
   b.addEventListener('click',()=>{
@@ -275,6 +294,10 @@ document.getElementById('opRow').querySelectorAll('.op-btn').forEach(b=>{
     b.classList.add('active');
     selectedOp=b.dataset.op;
     playClick();
+    
+    // 割り算判定のUI更新
+    updateDetailSettingsState();
+    
     if (gameActive) {
       qNum--; 
       nextQuestion();
@@ -321,12 +344,9 @@ function checkKuri(a, b, op) {
     return false;
   }
   if (op === '×') {
-    // かけ算のひっ算におけるくり上がりチェック
-    // a(上の数：複数桁を想定) × b(下の数：1桁ずつに分解)
-    let strA = String(a).split('').reverse().map(Number); // 一の位から順に
+    let strA = String(a).split('').reverse().map(Number);
     let strB = String(b).split('').reverse().map(Number);
 
-    // 下の数の各桁ごとにひっ算を行うイメージ
     for (let j = 0; j < strB.length; j++) {
       let carry = 0;
       let partialCarryDetected = false;
@@ -335,14 +355,9 @@ function checkKuri(a, b, op) {
         let prod = strA[i] * strB[j] + carry;
         carry = Math.floor(prod / 10);
         
-        // 九九の時点で10以上、または前の桁からの足し算で10以上になり、
-        // かつ、それが「一番最後の桁（最上位）を超えてさらに上の桁への進出」ではない場合、
-        // ひっ算のマス目上での「くり上がり(数字を小さくメモする行為)」が発生したとみなす
         if (prod >= 10 && i < strA.length - 1) {
           partialCarryDetected = true;
         }
-        // 最上位桁の掛け算でも、答えが10以上になれば（例: 6×3=18など）、
-        // ひっ算の枠を横に1つはみ出すため、子供の視点では「くり上がり」と感じることが多い
         if (prod >= 10 && i === strA.length - 1) {
           partialCarryDetected = true;
         }
@@ -350,16 +365,13 @@ function checkKuri(a, b, op) {
       if (partialCarryDetected) return true;
     }
 
-    // 2桁×2桁などの場合、掛け算のあとの「足し算のフェーズ」でくり上がるかどうかもチェック
     if (strB.length > 1) {
       let lines = [];
       for (let j = 0; j < strB.length; j++) {
         lines.push(a * strB[j] * Math.pow(10, j));
       }
-      // 足し算のくり上がりチェック
       let sum = lines[0];
       for (let k = 1; k < lines.length; k++) {
-        // 自作の足し算用チェックを流用
         if (checkKuri(sum, lines[k], '+')) return true;
         sum += lines[k];
       }
@@ -400,7 +412,6 @@ function genQ(){
       ans=q;
     }
 
-    // くり上がり・くり下がりの条件チェック（足し算・引き算・かけ算）
     if (valid && (op === '+' || op === '-' || op === '×')) {
       const hasKuri = checkKuri(a, b, op);
       if (kuriSetting === 'no' && hasKuri) valid = false;
@@ -409,10 +420,8 @@ function genQ(){
 
   } while (!valid && attempts < 1500);
 
-  // 万が一、条件に合う問題がどうしても見つからなかった場合の安全装置
   if (!valid) {
     if (op === '×') {
-      // くり上がり「なし」のときは確実にくり上がらない単純な問題をセット
       a = d1 === 1 ? 2 : (d1 === 2 ? 12 : 112);
       b = d2 === 1 ? 3 : (d2 === 2 ? 13 : 113);
       ans = a * b;
@@ -629,6 +638,9 @@ function toggleEraser(){
   erasing=!erasing;
   document.getElementById('eraserBtn').classList.toggle('sel',erasing);playClick();
 }
+
+// 起動時の初期化チェック
+updateDetailSettingsState();
 
 window.addEventListener('resize',resizeCanvas);
 resizeCanvas();
