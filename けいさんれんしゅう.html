@@ -33,8 +33,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 
 /* 詳細設定エリア */
 .detail-settings{border-top:1px dashed var(--border);padding-top:6px;margin-top:8px;display:flex;flex-direction:column;gap:8px;}
-.check-group{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text);cursor:pointer;user-select:none;}
-.check-group input{cursor:pointer;}
 
 .op-label{font-size:12px;color:var(--muted);margin:0 0 4px;font-weight:bold;}
 .op-row{display:flex;gap:5px;margin-bottom:10px;}
@@ -190,14 +188,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
             <option value="yes">あり</option>
           </select>
         </div>
-        <div style="display:flex; gap:12px;">
-          <label class="check-group">
-            <input type="checkbox" id="limit100"> 答えが100をこえない
-          </label>
-          <label class="check-group">
-            <input type="checkbox" id="limit1000"> 答えが1000をこえない
-          </label>
-        </div>
       </div>
     </div>
 
@@ -292,8 +282,8 @@ document.getElementById('opRow').querySelectorAll('.op-btn').forEach(b=>{
   });
 });
 
-// けた・くり上がり・チェックボックスが変更されたとき
-['dig1', 'dig2', 'kuris', 'limit100', 'limit1000'].forEach(id => {
+// けた・くり上がりの設定が変更されたとき
+['dig1', 'dig2', 'kuris'].forEach(id => {
   document.getElementById(id).addEventListener('change', () => {
     if (gameActive) {
       qNum--; 
@@ -306,6 +296,7 @@ function getRand(digits){
   return Math.floor(Math.random()*(Math.pow(10,digits)-Math.pow(10,digits-1)))+Math.pow(10,digits-1);
 }
 
+// くり上がり・くり下がり判定関数
 function checkKuri(a, b, op) {
   if (op === '+') {
     let strA = String(a).split('').reverse();
@@ -329,6 +320,52 @@ function checkKuri(a, b, op) {
     }
     return false;
   }
+  if (op === '×') {
+    // かけ算のひっ算におけるくり上がりチェック
+    // a(上の数：複数桁を想定) × b(下の数：1桁ずつに分解)
+    let strA = String(a).split('').reverse().map(Number); // 一の位から順に
+    let strB = String(b).split('').reverse().map(Number);
+
+    // 下の数の各桁ごとにひっ算を行うイメージ
+    for (let j = 0; j < strB.length; j++) {
+      let carry = 0;
+      let partialCarryDetected = false;
+      
+      for (let i = 0; i < strA.length; i++) {
+        let prod = strA[i] * strB[j] + carry;
+        carry = Math.floor(prod / 10);
+        
+        // 九九の時点で10以上、または前の桁からの足し算で10以上になり、
+        // かつ、それが「一番最後の桁（最上位）を超えてさらに上の桁への進出」ではない場合、
+        // ひっ算のマス目上での「くり上がり(数字を小さくメモする行為)」が発生したとみなす
+        if (prod >= 10 && i < strA.length - 1) {
+          partialCarryDetected = true;
+        }
+        // 最上位桁の掛け算でも、答えが10以上になれば（例: 6×3=18など）、
+        // ひっ算の枠を横に1つはみ出すため、子供の視点では「くり上がり」と感じることが多い
+        if (prod >= 10 && i === strA.length - 1) {
+          partialCarryDetected = true;
+        }
+      }
+      if (partialCarryDetected) return true;
+    }
+
+    // 2桁×2桁などの場合、掛け算のあとの「足し算のフェーズ」でくり上がるかどうかもチェック
+    if (strB.length > 1) {
+      let lines = [];
+      for (let j = 0; j < strB.length; j++) {
+        lines.push(a * strB[j] * Math.pow(10, j));
+      }
+      // 足し算のくり上がりチェック
+      let sum = lines[0];
+      for (let k = 1; k < lines.length; k++) {
+        // 自作の足し算用チェックを流用
+        if (checkKuri(sum, lines[k], '+')) return true;
+        sum += lines[k];
+      }
+    }
+    return false;
+  }
   return false;
 }
 
@@ -336,8 +373,6 @@ function genQ(){
   const d1=parseInt(document.getElementById('dig1').value);
   const d2=parseInt(document.getElementById('dig2').value);
   const kuriSetting=document.getElementById('kuris').value;
-  const limit100=document.getElementById('limit100').checked;
-  const limit1000=document.getElementById('limit1000').checked;
   const op=selectedOp;
 
   let a, b, ans, valid;
@@ -365,18 +400,24 @@ function genQ(){
       ans=q;
     }
 
-    // すべての演算において答えの上限をチェック
-    if (limit100 && ans > 100) valid = false;
-    if (limit1000 && ans > 1000) valid = false;
-
-    // くり上がり・くり下がりの追加チェック（足し算・引き算のみ）
-    if (valid && (op === '+' || op === '-')) {
+    // くり上がり・くり下がりの条件チェック（足し算・引き算・かけ算）
+    if (valid && (op === '+' || op === '-' || op === '×')) {
       const hasKuri = checkKuri(a, b, op);
       if (kuriSetting === 'no' && hasKuri) valid = false;
       if (kuriSetting === 'yes' && !hasKuri) valid = false;
     }
 
-  } while (!valid && attempts < 1000);
+  } while (!valid && attempts < 1500);
+
+  // 万が一、条件に合う問題がどうしても見つからなかった場合の安全装置
+  if (!valid) {
+    if (op === '×') {
+      // くり上がり「なし」のときは確実にくり上がらない単純な問題をセット
+      a = d1 === 1 ? 2 : (d1 === 2 ? 12 : 112);
+      b = d2 === 1 ? 3 : (d2 === 2 ? 13 : 113);
+      ans = a * b;
+    }
+  }
 
   return{a,b,op,ans};
 }
