@@ -18,7 +18,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .app-wrap{display:flex;height:100vh;position:relative;z-index:1;}
 
 /* ===== LEFT PANEL (PC基準) ===== */
-/* 横幅を設定カードに合わせて360pxに固定 */
 .left-panel{width:360px;min-width:360px;max-width:360px;display:flex;flex-direction:column;padding:4px;gap:4px;overflow:hidden;height:100vh;}
 
 /* タイトル */
@@ -55,11 +54,10 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .progress-wrap{height:8px;background:#ddeeff;border-radius:99px;overflow:hidden;margin-top:4px;}
 .progress-bar{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1);}
 
-/* 問題カード（初期状態・結果用） */
+/* 問題カード（初期状態用） */
 .question-card{display:none;background:linear-gradient(135deg,#eaf5ff,#f0faf5);
   border-radius:14px;padding:8px 14px;border:2px solid var(--border);text-align:center;
   box-shadow:0 3px 10px #185FA515;flex-direction:column;justify-content:center;}
-.q-hint{font-size:11px;color:var(--muted);margin-bottom:4px;}
 .question-text{font-family:'Nunito',sans-serif;font-size:30px;font-weight:900;color:var(--text);letter-spacing:1px;}
 .question-text .op-sym{color:var(--coral);padding:0 5px;}
 
@@ -78,7 +76,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .answer-display.correct{border-color:var(--green);}
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}60%{transform:translateX(7px)}}
 
-/* 🔢 数字パッドの配置コンテナ (PCでの最大幅を340pxにして設定幅と同期) */
+/* 🔢 数字パッドの配置コンテナ */
 .numpad-container {width:100%;display:flex;justify-content:center;}
 .numpad{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;width:100%;max-width:340px;margin:0 auto;}
 
@@ -125,13 +123,12 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .intro-area{text-align:center;padding:0px 0 10px;margin-top:-20px;}
 .intro-area p{font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.8;}
 
-/* 結果 */
-.result-card{background:var(--card);border-radius:16px;padding:16px;border:2px solid var(--border);text-align:center;box-shadow:0 3px 12px #185FA515;}
-.result-score{font-family:'Nunito',sans-serif;font-size:60px;font-weight:900;color:var(--darkblue);line-height:1;}
-.result-sub{font-size:13px;color:var(--muted);margin-bottom:3px;}
-.result-msg{font-size:15px;margin:8px 0 12px;color:var(--text);}
-.result-list{text-align:left;font-size:13px;background:#f5f9ff;border-radius:10px;padding:8px 12px;margin-bottom:12px;max-height:150px;overflow-y:auto;}
-.result-list .row{display:flex;gap:6px;padding:2px 0;border-bottom:1px solid #e0edff;align-items:center;}
+/* 🏆 結果カード（PC・スマホともにボタンが消えないようパディングと間隔を微調整） */
+.result-card{background:var(--card);border-radius:16px;padding:12px;border:2px solid var(--border);text-align:center;box-shadow:0 3px 12px #185FA515;display:flex;flex-direction:column;gap:4px;width:100%;max-width:340px;margin:0 auto;}
+.result-score{font-family:'Nunito',sans-serif;font-size:52px;font-weight:900;color:var(--darkblue);line-height:1.1;}
+.result-msg{font-size:14px;margin:2px 0 6px;color:var(--text);font-weight:bold;line-height:1.4;}
+.result-list{text-align:left;font-size:13px;background:#f5f9ff;border-radius:10px;padding:6px 12px;margin-bottom:6px;max-height:130px;overflow-y:auto;border:1px solid #e0edff;}
+.result-list .row{display:flex;gap:6px;padding:3px 0;border-bottom:1px solid #e0edff;align-items:center;}
 .result-list .row:last-child{border-bottom:none;}
 .badge-ok{color:var(--green);font-weight:700;}
 .badge-ng{color:var(--red);font-weight:700;}
@@ -254,14 +251,14 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     border-radius: 8px;
   }
 
-  /* 📱 スマホ時のテンキーの縦サイズ（高さ）を大きく調整 */
+  /* スマホ時のテンキーの縦サイズ（高さ）を大きく調整 */
   .numpad {
     gap: 5px;
-    max-width: 100%; /* スマホ画面全体に広げる */
+    max-width: 100%;
   }
   .num-btn, .clear-btn {
-    height: 52px; /* 縦サイズを大きく変更 (40px -> 52px) */
-    font-size: 20px; /* 数字も少し見やすく大きく */
+    height: 52px;
+    font-size: 20px;
     border-radius: 8px;
     box-shadow: 0 3px 0;
   }
@@ -274,7 +271,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
   }
   .grid-ans {
     font-size: 16px;
-    height: 56px; /* こたえるボタンはさらに大きくして押しやすく */
+    height: 56px;
     box-shadow: 0 3px 0 var(--darkgreen);
   }
 
@@ -294,21 +291,23 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
   }
   .start-btn:active { transform: translateY(2px); }
   
+  /* スマホ結果画面の最適化 */
   .result-card {
-    padding: 12px;
+    padding: 10px;
     border-radius: 12px;
+    max-height: 90vh;
   }
   .result-score {
-    font-size: 40px;
+    font-size: 44px;
   }
   .result-msg {
     font-size: 13px;
-    margin: 6px 0;
+    margin: 2px 0 4px;
   }
   .result-list {
-    max-height: 100px;
-    padding: 6px 10px;
-    margin-bottom: 8px;
+    max-height: 110px;
+    padding: 4px 10px;
+    margin-bottom: 4px;
   }
 }
 </style>
@@ -716,6 +715,7 @@ function spawnConfetti(){
   setTimeout(()=>wrap.innerHTML='',1400);
 }
 
+/* 🏆 結果表示画面（「10問のけっか」を削除し、レイアウトが1画面に収まるよう微調整） */
 function showResult(){
   gameActive=false;
   playFinish(score);
@@ -734,9 +734,8 @@ function showResult(){
     </div>`).join('');
   document.getElementById('mainArea').innerHTML=`
     <div class="result-card">
-      <div class="result-sub">10問のけっか</div>
       <div class="result-score">${score}<span style="font-size:20px">点</span></div>
-      <div style="font-size:24px;margin:2px 0;">${emoji}</div>
+      <div style="font-size:26px;margin:2px 0;line-height:1;">${emoji}</div>
       <div class="result-msg">${msg}</div>
       <div class="result-list">${rows}</div>
       <button class="start-btn" onclick="startGame()">▶ もう一度！</button>
