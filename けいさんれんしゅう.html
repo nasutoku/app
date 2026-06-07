@@ -18,7 +18,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .app-wrap{display:flex;height:100vh;position:relative;z-index:1;}
 
 /* ===== LEFT PANEL (PC基準) ===== */
-.left-panel{width:360px;min-width:320px;display:flex;flex-direction:column;padding:4px;gap:4px;overflow:hidden;height:100vh;}
+/* 横幅を設定カードに合わせて360pxに固定 */
+.left-panel{width:360px;min-width:360px;max-width:360px;display:flex;flex-direction:column;padding:4px;gap:4px;overflow:hidden;height:100vh;}
 
 /* タイトル */
 .app-title{font-family:'Nunito',sans-serif;font-size:16px;font-weight:900;color:var(--darkblue);
@@ -77,15 +78,15 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .answer-display.correct{border-color:var(--green);}
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}60%{transform:translateX(7px)}}
 
-/* 🔢 数字パッドの配置コンテナ */
+/* 🔢 数字パッドの配置コンテナ (PCでの最大幅を340pxにして設定幅と同期) */
 .numpad-container {width:100%;display:flex;justify-content:center;}
-.numpad{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;width:100%;}
+.numpad{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;width:100%;max-width:340px;margin:0 auto;}
 
-/* 全ボタン共通のベーススタイル（高さを揃える） */
+/* 全ボタン共通のベーススタイル（PC版の高さ） */
 .num-btn, .clear-btn, .answer-btn {
   font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;padding:7px 0;
   border-radius:9px;border:2px solid;cursor:pointer;transition:transform .1s,box-shadow .1s;user-select:none;box-shadow:0 3px 0;
-  display:flex;align-items:center;justify-content:center;height:42px; /* 高さを一律固定 */
+  display:flex;align-items:center;justify-content:center;height:42px;
 }
 .num-btn:active, .clear-btn:active, .answer-btn:active{transform:translateY(3px);box-shadow:0 0 0!important;}
 
@@ -173,14 +174,15 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
   .left-panel {
     width: 100%;
     min-width: 100%;
-    height: 100vh; /* ひっ算を消すため、計算画面を画面いっぱいに広げる */
+    max-width: 100%;
+    height: 100vh;
     flex: 1;
     padding: 6px;
     gap: 6px;
     background: var(--sky);
   }
 
-  /* 📱 スマホの時はひっ算スペースを完全に非表示にする */
+  /* スマホの時はひっ算スペースを完全に非表示 */
   .right-panel {
     display: none !important;
   }
@@ -252,13 +254,14 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     border-radius: 8px;
   }
 
-  /* ひっ算スペースが消えて余裕ができたため、スマホでも押しやすいサイズに調整 */
+  /* 📱 スマホ時のテンキーの縦サイズ（高さ）を大きく調整 */
   .numpad {
     gap: 5px;
+    max-width: 100%; /* スマホ画面全体に広げる */
   }
-  .num-btn, .clear-btn, .answer-btn {
-    height: 40px; 
-    font-size: 18px;
+  .num-btn, .clear-btn {
+    height: 52px; /* 縦サイズを大きく変更 (40px -> 52px) */
+    font-size: 20px; /* 数字も少し見やすく大きく */
     border-radius: 8px;
     box-shadow: 0 3px 0;
   }
@@ -266,12 +269,12 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     transform: translateY(2px);
   }
   .grid-clear {
-    font-size: 13px;
+    font-size: 14px;
     box-shadow: 0 3px 0 #F09595;
   }
   .grid-ans {
-    font-size: 15px;
-    height: 44px; /* こたえるボタンをさらに押しやすく */
+    font-size: 16px;
+    height: 56px; /* こたえるボタンはさらに大きくして押しやすく */
     box-shadow: 0 3px 0 var(--darkgreen);
   }
 
@@ -603,7 +606,6 @@ function nextQuestion(){
   document.getElementById('scoreVal').textContent=`${score}点`;
   const opMap={'+':'＋','-':'－','×':'×','÷':'÷'};
 
-  /* 問題欄とテンキーの上下を隙間なく密着させる構造 */
   document.getElementById('mainArea').innerHTML = `
     <div style="display:flex;flex-direction:column;gap:12px;width:100%;padding:4px 0;">
       
@@ -752,7 +754,7 @@ let drawing=false,penColor='#1a2d45',penSize=3,erasing=false,lastX=0,lastY=0;
 
 function resizeCanvas(){
   const wrap=canvas.parentElement,dpr=window.devicePixelRatio||1;
-  if(!wrap) return; // スマホ等で非表示の場合はスキップ
+  if(!wrap) return;
   const w=wrap.clientWidth,h=wrap.clientHeight;
   canvas.width=w*dpr;canvas.height=h*dpr;
   canvas.style.width=w+'px';canvas.style.height=h+'px';
