@@ -2,29 +2,20 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>なとくけいさんれんしゅう！</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght=700;800;900&family=Kosugi+Maru&display=swap" rel="stylesheet">
 <style>
-/* 画面全体のダブルタップズームをCSSレベルで強力に禁止 */
-html, body {
-  touch-action: manipulation !important;
-  height: 100%;
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-}
-
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --sky:#e8f4fd;--blue:#378ADD;--darkblue:#185FA5;--green:#1D9E75;--darkgreen:#0F6E56;
   --red:#E24B4A;--amber:#EF9F27;--purple:#7F77DD;--coral:#D85A30;--pink:#D4537E;
   --card:#fff;--border:#c8dff5;--text:#1a2d45;--muted:#5a7a9a;}
-
+html,body{height:100%;overflow:hidden;position:fixed;width:100%;}
 body{font-family:'Kosugi Maru',sans-serif;background:var(--sky);}
 body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,#b5d4f460 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none;z-index:0;}
 
-.app-wrap{display:flex;height:100vh;position:relative;z-index:1;touch-action:manipulation;}
+.app-wrap{display:flex;height:100vh;position:relative;z-index:1;}
 
 /* ===== LEFT PANEL (PC基準) ===== */
 .left-panel{width:360px;min-width:360px;max-width:360px;display:flex;flex-direction:column;padding:4px;gap:4px;overflow:hidden;height:100vh;}
@@ -85,16 +76,15 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .answer-display.correct{border-color:var(--green);}
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}60%{transform:translateX(7px)}}
 
-/* 🔢 数字パッドの配置コンテナ */
+/* 🔢 数字パッド的配置コンテナ */
 .numpad-container {width:100%;display:flex;justify-content:center;}
 .numpad{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;width:100%;max-width:340px;margin:0 auto;}
 
-/* 全ボタンのベーススタイル（touch-actionを個別にも付与） */
+/* 全ボタン共通のベーススタイル（PC版の高さ） */
 .num-btn, .clear-btn, .answer-btn {
   font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;padding:7px 0;
   border-radius:9px;border:2px solid;cursor:pointer;transition:transform .1s,box-shadow .1s;user-select:none;box-shadow:0 3px 0;
   display:flex;align-items:center;justify-content:center;height:42px;
-  touch-action:manipulation !important;
 }
 .num-btn:active, .clear-btn:active, .answer-btn:active{transform:translateY(3px);box-shadow:0 0 0!important;}
 
@@ -174,45 +164,157 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
    📱 スマートフォン用のスタイル（縦画面を徹底最適化）
 ======================================================= */
 @media screen and (max-width: 768px) {
-  .app-wrap { flex-direction: column; }
-  .left-panel { width: 100%; min-width: 100%; max-width: 100%; height: 100vh; flex: 1; padding: 6px; gap: 6px; background: var(--sky); }
-  .right-panel { display: none !important; }
-  .app-title { font-size: 14px; padding: 4px; border-radius: 8px; }
-  .settings-card { padding: 6px 10px; border-radius: 10px; }
-  .op-label { display: none; }
-  .op-row { margin-bottom: 6px; gap: 5px; }
-  .op-btn { font-size: 16px; padding: 0; height: 32px; border-radius: 8px; }
-  .settings-row { margin-bottom: 0; display: inline-flex; gap: 8px; }
-  .setting-group { font-size: 12px; }
-  .setting-group select { font-size: 12px; padding: 2px 6px; border-radius: 5px; }
-  .detail-settings { margin-top: 4px; padding-top: 4px; display: inline-flex; border-top: none; }
-  .score-bar { font-size: 12px; }
+  .app-wrap {
+    flex-direction: column;
+  }
+  
+  .left-panel {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    height: 100vh;
+    flex: 1;
+    padding: 6px;
+    gap: 6px;
+    background: var(--sky);
+  }
+
+  /* スマホの時はひっ算スペースを完全に非表示 */
+  .right-panel {
+    display: none !important;
+  }
+
+  .app-title {
+    font-size: 14px;
+    padding: 4px;
+    border-radius: 8px;
+  }
+
+  .settings-card {
+    padding: 6px 10px;
+    border-radius: 10px;
+  }
+  .op-label {
+    display: none;
+  }
+  .op-row {
+    margin-bottom: 6px;
+    gap: 5px;
+  }
+  .op-btn {
+    font-size: 16px;
+    padding: 0;
+    height: 32px;
+    border-radius: 8px;
+  }
+  .settings-row {
+    margin-bottom: 0;
+    display: inline-flex;
+    gap: 8px;
+  }
+  .setting-group {
+    font-size: 12px;
+  }
+  .setting-group select {
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 5px;
+  }
+  .detail-settings {
+    margin-top: 4px;
+    padding-top: 4px;
+    display: inline-flex;
+    border-top: none;
+  }
+
+  .score-bar {
+    font-size: 12px;
+  }
   .q-label { font-size: 12px; }
   .score-val { font-size: 16px; }
   .progress-wrap { height: 6px; margin-top: 3px; }
+
   .qa-row-wrap { gap: 6px; margin-top: 4px; }
-  .qa-row-wrap .question-card { height: 42px; border-radius: 8px; }
-  .qa-row-wrap .question-text { font-size: 22px; }
-  .qa-row-wrap .eq-separator { font-size: 20px; }
-  .answer-display { height: 42px; font-size: 22px; border-radius: 8px; }
-  .numpad { gap: 5px; max-width: 100%; }
-  .num-btn, .clear-btn { height: 52px; font-size: 20px; border-radius: 8px; box-shadow: 0 3px 0; }
-  .num-btn:active, .clear-btn:active, .answer-btn:active { transform: translateY(2px); }
-  .grid-clear { font-size: 14px; box-shadow: 0 3px 0 #F09595; }
-  .grid-ans { font-size: 16px; height: 56px; box-shadow: 0 3px 0 var(--darkgreen); }
-  .intro-area { margin-top: 20px; padding: 10px 0; }
-  .intro-area p { font-size: 13px; margin-bottom: 12px; }
-  .start-btn { padding: 10px 24px; font-size: 16px; border-radius: 10px; box-shadow: 0 3px 0 var(--darkblue); }
+  .qa-row-wrap .question-card {
+    height: 42px;
+    border-radius: 8px;
+  }
+  .qa-row-wrap .question-text {
+    font-size: 22px;
+  }
+  .qa-row-wrap .eq-separator {
+    font-size: 20px;
+  }
+  .answer-display {
+    height: 42px;
+    font-size: 22px;
+    border-radius: 8px;
+  }
+
+  /* スマホ時のテンキーの縦サイズ（高さ）を大きく調整 */
+  .numpad {
+    gap: 5px;
+    max-width: 100%;
+  }
+  .num-btn, .clear-btn {
+    height: 52px;
+    font-size: 20px;
+    border-radius: 8px;
+    box-shadow: 0 3px 0;
+  }
+  .num-btn:active, .clear-btn:active, .answer-btn:active {
+    transform: translateY(2px);
+  }
+  .grid-clear {
+    font-size: 14px;
+    box-shadow: 0 3px 0 #F09595;
+  }
+  .grid-ans {
+    font-size: 16px;
+    height: 56px;
+    box-shadow: 0 3px 0 var(--darkgreen);
+  }
+
+  .intro-area {
+    margin-top: 4px;
+    padding: 4px 0;
+  }
+  .intro-area p {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  .start-btn {
+    padding: 10px 24px;
+    font-size: 16px;
+    border-radius: 10px;
+    box-shadow: 0 3px 0 var(--darkblue);
+  }
   .start-btn:active { transform: translateY(2px); }
-  .result-card { padding: 10px; border-radius: 12px; max-height: 90vh; }
-  .result-score { font-size: 44px; }
-  .result-msg { font-size: 13px; margin: 2px 0 4px; }
-  .result-list { max-height: 110px; padding: 4px 10px; margin-bottom: 4px; }
+  
+  /* スマホ結果画面の最適化（インジケーター直下に詰める調整） */
+  .result-card {
+    padding: 10px;
+    border-radius: 12px;
+    max-height: 90vh;
+    margin-top: 2px; /* 上部との隙間を詰める */
+  }
+  .result-score {
+    font-size: 44px;
+  }
+  .result-msg {
+    font-size: 13px;
+    margin: 2px 0 4px;
+  }
+  .result-list {
+    max-height: 110px;
+    padding: 4px 10px;
+    margin-bottom: 4px;
+  }
 }
 </style>
 </head>
 <body>
-<div class="app-wrap" id="appBodyContainer">
+<div class="app-wrap">
 
   <div class="left-panel">
 
@@ -229,15 +331,20 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 
       <div class="settings-row">
         <div class="setting-group">
-          <select id="digitCombo">
-            <option value="1-1">1けた と 1けた</option>
-            <option value="2-1" selected>2けた と 1けた</option>
-            <option value="3-1">3けた と 1けた</option>
-            <option value="2-2">2けた と 2けた</option>
-            <option value="3-2">3けた と 2けた</option>
-            <option value="3-3">3けた と 3けた</option>
+          <select id="dig1">
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
           </select>
-          <label>の けいさん</label>
+          <label>けた と</label>
+        </div>
+        <div class="setting-group">
+          <select id="dig2">
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+          <label>けた の けいさん</label>
         </div>
       </div>
 
@@ -321,7 +428,7 @@ function playFinish(s){
   else if(s>=60){[523,659,784].forEach((f,i)=>playTone(f,'sine',0.3,0.22,i*0.1));}
   else{playTone(330,'sine',0.4,0.18);playTone(294,'sine',0.4,0.18,0.2);}
 }
-function playToneClear(){playTone(400,'sine',0.08,0.12);}
+function playClear(){playTone(400,'sine',0.08,0.12);}
 function resumeAC(){if(AC.state==='suspended')AC.resume();}
 document.addEventListener('click',resumeAC,{once:true});
 
@@ -333,6 +440,8 @@ const praises=['すごい！🌟','やったね！🎉','かんぺき！✨','�
 function updateDetailSettingsState() {
   const kurisSelect = document.getElementById('kuris');
   const group = document.getElementById('kuriSettingGroup');
+  
+  if (!kurisSelect || !group) return; // 要素が存在しない場合のエラー防止ガード
   
   if (selectedOp === '÷') {
     kurisSelect.value = 'any';
@@ -358,14 +467,16 @@ document.getElementById('opRow').querySelectorAll('.op-btn').forEach(b=>{
   });
 });
 
-['digitCombo', 'kuris'].forEach(id => {
-  document.getElementById(id).addEventListener('change', () => {
-    updateDetailSettingsState();
-    if (gameActive) {
-      qNum--; 
-      nextQuestion();
-    }
-  });
+['dig1', 'dig2', 'kuris'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('change', () => {
+      if (gameActive) {
+        qNum--; 
+        nextQuestion();
+      }
+    });
+  }
 });
 
 function getRand(digits){
@@ -406,7 +517,13 @@ function checkKuri(a, b, op) {
       for (let i = 0; i < strA.length; i++) {
         let prod = strA[i] * strB[j] + carry;
         carry = Math.floor(prod / 10);
-        if (prod >= 10) partialCarryDetected = true;
+        
+        if (prod >= 10 && i < strA.length - 1) {
+          partialCarryDetected = true;
+        }
+        if (prod >= 10 && i === strA.length - 1) {
+          partialCarryDetected = true;
+        }
       }
       if (partialCarryDetected) return true;
     }
@@ -428,11 +545,10 @@ function checkKuri(a, b, op) {
 }
 
 function genQ(){
-  const comboVal = document.getElementById('digitCombo').value.split('-');
-  const d1 = parseInt(comboVal[0]);
-  const d2 = parseInt(comboVal[1]);
-  const kuriSetting = document.getElementById('kuris').value;
-  const op = selectedOp;
+  const d1=parseInt(document.getElementById('dig1').value);
+  const d2=parseInt(document.getElementById('dig2').value);
+  const kuriSetting=document.getElementById('kuris').value;
+  const op=selectedOp;
 
   let a, b, ans, valid;
   let attempts = 0;
@@ -509,7 +625,7 @@ function nextQuestion(){
       </div>
 
       <div class="numpad-container">
-        <div class="numpad" id="numpadArea">
+        <div class="numpad">
           <button class="num-btn grid-num n7" onclick="addDigit('7')">7</button>
           <button class="num-btn grid-num n8" onclick="addDigit('8')">8</button>
           <button class="num-btn grid-num n9" onclick="addDigit('9')">9</button>
@@ -548,7 +664,7 @@ function addDigit(d){
   answer+=d;updateDisp();playClick();
 }
 
-function clearAns(){answer='';updateDisp();playToneClear();}
+function clearAns(){answer='';updateDisp();playClear();}
 
 function updateDisp(){
   const el=document.getElementById('ansDisp');
@@ -605,6 +721,7 @@ function spawnConfetti(){
   setTimeout(()=>wrap.innerHTML='',1400);
 }
 
+/* 🏆 結果表示画面 */
 function showResult(){
   gameActive=false;
   playFinish(score);
@@ -630,9 +747,17 @@ function showResult(){
       <button class="start-btn" onclick="startGame()">▶ もう一度！</button>
     </div>
   `;
-  document.getElementById('mainArea').style.flex='1';
-  document.getElementById('mainArea').style.overflow='auto';
-  document.getElementById('mainArea').style.justifyContent='center';
+  
+  const ma = document.getElementById('mainArea');
+  ma.style.flex='1';
+  ma.style.overflow='auto';
+  
+  // スマホ表示の時は中央に浮かび上がらず、インジケーター直下に上詰め（flex-start）する調整
+  if (window.innerWidth <= 768) {
+    ma.style.justifyContent='flex-start';
+  } else {
+    ma.style.justifyContent='center';
+  }
 }
 
 // ====== HISSAN CANVAS ======
@@ -685,7 +810,7 @@ canvas.addEventListener('touchend',endDraw);
 
 function clearCanvas(){
   const w=canvas.width/(window.devicePixelRatio||1),h=canvas.height/(window.devicePixelRatio||1);
-  ctx.clearRect(0,0,canvas.width,canvas.height);drawGrid(w,h);playToneClear();
+  ctx.clearRect(0,0,canvas.width,canvas.height);drawGrid(w,h);playClear();
 }
 function setColor(el){
   document.querySelectorAll('.color-pick').forEach(e=>e.classList.remove('sel'));
@@ -701,40 +826,12 @@ function toggleEraser(){
   document.getElementById('eraserBtn').classList.toggle('sel',erasing);playClick();
 }
 
+// 初回の状態を更新
 updateDetailSettingsState();
 
 window.addEventListener('resize',resizeCanvas);
 window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 200));
 resizeCanvas();
-
-// ========================================================
-// 📱 スマホ用：画面全体のダブルタップズーム挙動をJavaScriptで強制遮断
-// ========================================================
-let lastTouchTime = 0;
-const container = document.getElementById('appBodyContainer');
-
-if (container) {
-  // タップが開始された瞬間に連続タップを判定
-  container.addEventListener('touchstart', function (e) {
-    const now = window.performance.now();
-    if (now - lastTouchTime <= 300) {
-      e.preventDefault(); // 300ms以内の連続タップをズームイベントごと強制キャンセル
-    }
-    lastTouchTime = now;
-  }, { passive: false });
-
-  // 指が離れた瞬間の連続タップ（ダブルタップ）も検知してブロック
-  container.addEventListener('touchend', function (e) {
-    const now = window.performance.now();
-    if (now - lastTouchTime <= 300) {
-      // セレクトボックス(select)やボタンの通常動作を完全に奪わないよう、
-      // 拡大ズームに関係するデフォルト動作のみを狙い撃ちで予防
-      if (e.target.tagName !== 'SELECT' && e.target.tagName !== 'OPTION') {
-        e.preventDefault();
-      }
-    }
-  }, { passive: false });
-}
 </script>
 </body>
 </html>
