@@ -80,11 +80,12 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .numpad-container {width:100%;display:flex;justify-content:center;}
 .numpad{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;width:100%;max-width:340px;margin:0 auto;}
 
-/* 全ボタン共通のベーススタイル（PC版の高さ） */
+/* 全ボタン共通のベーススタイル（PC版の高さ） *touch-actionを追加してズームを防御 */
 .num-btn, .clear-btn, .answer-btn {
   font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;padding:7px 0;
   border-radius:9px;border:2px solid;cursor:pointer;transition:transform .1s,box-shadow .1s;user-select:none;box-shadow:0 3px 0;
   display:flex;align-items:center;justify-content:center;height:42px;
+  touch-action:manipulation;
 }
 .num-btn:active, .clear-btn:active, .answer-btn:active{transform:translateY(3px);box-shadow:0 0 0!important;}
 
@@ -123,7 +124,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .intro-area{text-align:center;padding:0px 0 10px;margin-top:-20px;}
 .intro-area p{font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.8;}
 
-/* 🏆 結果カード */
+/* 🏆 結果カード（PC・スマホともにボタンが消えないようパディングと間隔を微調整） */
 .result-card{background:var(--card);border-radius:16px;padding:12px;border:2px solid var(--border);text-align:center;box-shadow:0 3px 12px #185FA515;display:flex;flex-direction:column;gap:4px;width:100%;max-width:340px;margin:0 auto;}
 .result-score{font-family:'Nunito',sans-serif;font-size:52px;font-weight:900;color:var(--darkblue);line-height:1.1;}
 .result-msg{font-size:14px;margin:2px 0 6px;color:var(--text);font-weight:bold;line-height:1.4;}
@@ -162,42 +163,153 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 
 /* =======================================================
    📱 スマートフォン用のスタイル（縦画面を徹底最適化）
-====================================================== */
+======================================================= */
 @media screen and (max-width: 768px) {
-  .app-wrap { flex-direction: column; }
-  .left-panel { width: 100%; min-width: 100%; max-width: 100%; height: 100vh; flex: 1; padding: 6px; gap: 6px; background: var(--sky); }
-  .right-panel { display: none !important; }
-  .app-title { font-size: 14px; padding: 4px; border-radius: 8px; }
-  .settings-card { padding: 6px 10px; border-radius: 10px; }
-  .op-label { display: none; }
-  .op-row { margin-bottom: 6px; gap: 5px; }
-  .op-btn { font-size: 16px; padding: 0; height: 32px; border-radius: 8px; }
-  .settings-row { margin-bottom: 0; display: inline-flex; gap: 8px; }
-  .setting-group { font-size: 12px; }
-  .setting-group select { font-size: 12px; padding: 2px 6px; border-radius: 5px; }
-  .detail-settings { margin-top: 4px; padding-top: 4px; display: inline-flex; border-top: none; }
-  .score-bar { font-size: 12px; }
+  .app-wrap {
+    flex-direction: column;
+  }
+  
+  .left-panel {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    height: 100vh;
+    flex: 1;
+    padding: 6px;
+    gap: 6px;
+    background: var(--sky);
+  }
+
+  /* スマホの時はひっ算スペースを完全に非表示 */
+  .right-panel {
+    display: none !important;
+  }
+
+  .app-title {
+    font-size: 14px;
+    padding: 4px;
+    border-radius: 8px;
+  }
+
+  .settings-card {
+    padding: 6px 10px;
+    border-radius: 10px;
+  }
+  .op-label {
+    display: none;
+  }
+  .op-row {
+    margin-bottom: 6px;
+    gap: 5px;
+  }
+  .op-btn {
+    font-size: 16px;
+    padding: 0;
+    height: 32px;
+    border-radius: 8px;
+  }
+  .settings-row {
+    margin-bottom: 0;
+    display: inline-flex;
+    gap: 8px;
+  }
+  .setting-group {
+    font-size: 12px;
+  }
+  .setting-group select {
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 5px;
+  }
+  .detail-settings {
+    margin-top: 4px;
+    padding-top: 4px;
+    display: inline-flex;
+    border-top: none;
+  }
+
+  .score-bar {
+    font-size: 12px;
+  }
   .q-label { font-size: 12px; }
   .score-val { font-size: 16px; }
   .progress-wrap { height: 6px; margin-top: 3px; }
+
   .qa-row-wrap { gap: 6px; margin-top: 4px; }
-  .qa-row-wrap .question-card { height: 42px; border-radius: 8px; }
-  .qa-row-wrap .question-text { font-size: 22px; }
-  .qa-row-wrap .eq-separator { font-size: 20px; }
-  .answer-display { height: 42px; font-size: 22px; border-radius: 8px; }
-  .numpad { gap: 5px; max-width: 100%; }
-  .num-btn, .clear-btn { height: 52px; font-size: 20px; border-radius: 8px; box-shadow: 0 3px 0; }
-  .num-btn:active, .clear-btn:active, .answer-btn:active { transform: translateY(2px); }
-  .grid-clear { font-size: 14px; box-shadow: 0 3px 0 #F09595; }
-  .grid-ans { font-size: 16px; height: 56px; box-shadow: 0 3px 0 var(--darkgreen); }
-  .intro-area { margin-top: 20px; padding: 10px 0; }
-  .intro-area p { font-size: 13px; margin-bottom: 12px; }
-  .start-btn { padding: 10px 24px; font-size: 16px; border-radius: 10px; box-shadow: 0 3px 0 var(--darkblue); }
+  .qa-row-wrap .question-card {
+    height: 42px;
+    border-radius: 8px;
+  }
+  .qa-row-wrap .question-text {
+    font-size: 22px;
+  }
+  .qa-row-wrap .eq-separator {
+    font-size: 20px;
+  }
+  .answer-display {
+    height: 42px;
+    font-size: 22px;
+    border-radius: 8px;
+  }
+
+  /* スマホ時のテンキーの縦サイズ（高さ）を大きく調整 */
+  .numpad {
+    gap: 5px;
+    max-width: 100%;
+  }
+  .num-btn, .clear-btn {
+    height: 52px;
+    font-size: 20px;
+    border-radius: 8px;
+    box-shadow: 0 3px 0;
+  }
+  .num-btn:active, .clear-btn:active, .answer-btn:active {
+    transform: translateY(2px);
+  }
+  .grid-clear {
+    font-size: 14px;
+    box-shadow: 0 3px 0 #F09595;
+  }
+  .grid-ans {
+    font-size: 16px;
+    height: 56px;
+    box-shadow: 0 3px 0 var(--darkgreen);
+  }
+
+  .intro-area {
+    margin-top: 20px;
+    padding: 10px 0;
+  }
+  .intro-area p {
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+  .start-btn {
+    padding: 10px 24px;
+    font-size: 16px;
+    border-radius: 10px;
+    box-shadow: 0 3px 0 var(--darkblue);
+  }
   .start-btn:active { transform: translateY(2px); }
-  .result-card { padding: 10px; border-radius: 12px; max-height: 90vh; }
-  .result-score { font-size: 44px; }
-  .result-msg { font-size: 13px; margin: 2px 0 4px; }
-  .result-list { max-height: 110px; padding: 4px 10px; margin-bottom: 4px; }
+  
+  /* スマホ結果画面の最適化 */
+  .result-card {
+    padding: 10px;
+    border-radius: 12px;
+    max-height: 90vh;
+  }
+  .result-score {
+    font-size: 44px;
+  }
+  .result-msg {
+    font-size: 13px;
+    margin: 2px 0 4px;
+  }
+  .result-list {
+    max-height: 110px;
+    padding: 4px 10px;
+    margin-bottom: 4px;
+  }
 }
 </style>
 </head>
@@ -219,15 +331,20 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 
       <div class="settings-row">
         <div class="setting-group">
-          <select id="digitCombo">
-            <option value="1-1" selected>1けた と 1けた</option>
-            <option value="2-1">2けた と 1けた</option>
-            <option value="3-1">3けた と 1けた</option>
-            <option value="2-2">2けた と 2けた</option>
-            <option value="3-2">3けた と 2けた</option>
-            <option value="3-3">3けた と 3けた</option>
+          <select id="dig1">
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
           </select>
-          <label>の けいさん</label>
+          <label>けた と</label>
+        </div>
+        <div class="setting-group">
+          <select id="dig2">
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+          <label>けた の けいさん</label>
         </div>
       </div>
 
@@ -311,7 +428,8 @@ function playFinish(s){
   else if(s>=60){[523,659,784].forEach((f,i)=>playTone(f,'sine',0.3,0.22,i*0.1));}
   else{playTone(330,'sine',0.4,0.18);playTone(294,'sine',0.4,0.18,0.2);}
 }
-function playToneClear(){playTone(400,'sine',0.08,0.12);}
+function playClear(){playTone(400,'sine',0.08,0.12);}
+// AudioContextの再開処理
 function resumeAC(){if(AC.state==='suspended')AC.resume();}
 document.addEventListener('click',resumeAC,{once:true});
 
@@ -348,9 +466,8 @@ document.getElementById('opRow').querySelectorAll('.op-btn').forEach(b=>{
   });
 });
 
-['digitCombo', 'kuris'].forEach(id => {
+['dig1', 'dig2', 'kuris'].forEach(id => {
   document.getElementById(id).addEventListener('change', () => {
-    updateDetailSettingsState();
     if (gameActive) {
       qNum--; 
       nextQuestion();
@@ -396,7 +513,13 @@ function checkKuri(a, b, op) {
       for (let i = 0; i < strA.length; i++) {
         let prod = strA[i] * strB[j] + carry;
         carry = Math.floor(prod / 10);
-        if (prod >= 10) partialCarryDetected = true;
+        
+        if (prod >= 10 && i < strA.length - 1) {
+          partialCarryDetected = true;
+        }
+        if (prod >= 10 && i === strA.length - 1) {
+          partialCarryDetected = true;
+        }
       }
       if (partialCarryDetected) return true;
     }
@@ -418,11 +541,10 @@ function checkKuri(a, b, op) {
 }
 
 function genQ(){
-  const comboVal = document.getElementById('digitCombo').value.split('-');
-  const d1 = parseInt(comboVal[0]);
-  const d2 = parseInt(comboVal[1]);
-  const kuriSetting = document.getElementById('kuris').value;
-  const op = selectedOp;
+  const d1=parseInt(document.getElementById('dig1').value);
+  const d2=parseInt(document.getElementById('dig2').value);
+  const kuriSetting=document.getElementById('kuris').value;
+  const op=selectedOp;
 
   let a, b, ans, valid;
   let attempts = 0;
@@ -499,7 +621,7 @@ function nextQuestion(){
       </div>
 
       <div class="numpad-container">
-        <div class="numpad">
+        <div class="numpad" id="numpadArea">
           <button class="num-btn grid-num n7" onclick="addDigit('7')">7</button>
           <button class="num-btn grid-num n8" onclick="addDigit('8')">8</button>
           <button class="num-btn grid-num n9" onclick="addDigit('9')">9</button>
@@ -524,6 +646,19 @@ function nextQuestion(){
   const ma=document.getElementById('mainArea');
   ma.style.flex='1';ma.style.overflow='hidden';ma.style.justifyContent='flex-start';
   
+  // スマホ連打時のダブルタップズームを完全にブロックする処理
+  let lastTouchTime = 0;
+  const numpad = document.getElementById('numpadArea');
+  if(numpad) {
+    numpad.addEventListener('touchstart', (e) => {
+      const now = window.performance.now();
+      if (now - lastTouchTime <= 300) {
+        e.preventDefault(); // 300ミリ秒以内の連続タップ（ダブルタップ）のズーム挙動を無効化
+      }
+      lastTouchTime = now;
+    }, { passive: false });
+  }
+  
   setTimeout(resizeCanvas, 50);
 }
 
@@ -538,7 +673,7 @@ function addDigit(d){
   answer+=d;updateDisp();playClick();
 }
 
-function clearAns(){answer='';updateDisp();playToneClear();}
+function clearAns(){answer='';updateDisp();playClear();}
 
 function updateDisp(){
   const el=document.getElementById('ansDisp');
@@ -595,6 +730,7 @@ function spawnConfetti(){
   setTimeout(()=>wrap.innerHTML='',1400);
 }
 
+/* 🏆 結果表示画面（「10問のけっか」を削除し、レイアウトが1画面に収まるよう微調整） */
 function showResult(){
   gameActive=false;
   playFinish(score);
@@ -675,7 +811,7 @@ canvas.addEventListener('touchend',endDraw);
 
 function clearCanvas(){
   const w=canvas.width/(window.devicePixelRatio||1),h=canvas.height/(window.devicePixelRatio||1);
-  ctx.clearRect(0,0,canvas.width,canvas.height);drawGrid(w,h);playToneClear();
+  ctx.clearRect(0,0,canvas.width,canvas.height);drawGrid(w,h);playClear();
 }
 function setColor(el){
   document.querySelectorAll('.color-pick').forEach(e=>e.classList.remove('sel'));
