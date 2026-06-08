@@ -2,20 +2,29 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
 <title>なとくけいさんれんしゅう！</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght=700;800;900&family=Kosugi+Maru&display=swap" rel="stylesheet">
 <style>
+/* 画面全体のダブルタップズームをCSSレベルで強力に禁止 */
+html, body {
+  touch-action: manipulation !important;
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --sky:#e8f4fd;--blue:#378ADD;--darkblue:#185FA5;--green:#1D9E75;--darkgreen:#0F6E56;
   --red:#E24B4A;--amber:#EF9F27;--purple:#7F77DD;--coral:#D85A30;--pink:#D4537E;
   --card:#fff;--border:#c8dff5;--text:#1a2d45;--muted:#5a7a9a;}
-html,body{height:100%;overflow:hidden;position:fixed;width:100%;}
+
 body{font-family:'Kosugi Maru',sans-serif;background:var(--sky);}
 body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,#b5d4f460 1.5px,transparent 1.5px);background-size:32px 32px;pointer-events:none;z-index:0;}
 
-.app-wrap{display:flex;height:100vh;position:relative;z-index:1;}
+.app-wrap{display:flex;height:100vh;position:relative;z-index:1;touch-action:manipulation;}
 
 /* ===== LEFT PANEL (PC基準) ===== */
 .left-panel{width:360px;min-width:360px;max-width:360px;display:flex;flex-direction:column;padding:4px;gap:4px;overflow:hidden;height:100vh;}
@@ -80,11 +89,12 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .numpad-container {width:100%;display:flex;justify-content:center;}
 .numpad{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;width:100%;max-width:340px;margin:0 auto;}
 
-/* 全ボタン共通のベーススタイル（PC版の高さ） */
+/* 全ボタンのベーススタイル（touch-actionを個別にも付与） */
 .num-btn, .clear-btn, .answer-btn {
   font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;padding:7px 0;
   border-radius:9px;border:2px solid;cursor:pointer;transition:transform .1s,box-shadow .1s;user-select:none;box-shadow:0 3px 0;
   display:flex;align-items:center;justify-content:center;height:42px;
+  touch-action:manipulation !important;
 }
 .num-btn:active, .clear-btn:active, .answer-btn:active{transform:translateY(3px);box-shadow:0 0 0!important;}
 
@@ -162,7 +172,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 
 /* =======================================================
    📱 スマートフォン用のスタイル（縦画面を徹底最適化）
-====================================================== */
+======================================================= */
 @media screen and (max-width: 768px) {
   .app-wrap { flex-direction: column; }
   .left-panel { width: 100%; min-width: 100%; max-width: 100%; height: 100vh; flex: 1; padding: 6px; gap: 6px; background: var(--sky); }
@@ -202,7 +212,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 </style>
 </head>
 <body>
-<div class="app-wrap">
+<div class="app-wrap" id="appBodyContainer">
 
   <div class="left-panel">
 
@@ -220,8 +230,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
       <div class="settings-row">
         <div class="setting-group">
           <select id="digitCombo">
-            <option value="1-1" selected>1けた と 1けた</option>
-            <option value="2-1">2けた と 1けた</option>
+            <option value="1-1">1けた と 1けた</option>
+            <option value="2-1" selected>2けた と 1けた</option>
             <option value="3-1">3けた と 1けた</option>
             <option value="2-2">2けた と 2けた</option>
             <option value="3-2">3けた と 2けた</option>
@@ -499,7 +509,7 @@ function nextQuestion(){
       </div>
 
       <div class="numpad-container">
-        <div class="numpad">
+        <div class="numpad" id="numpadArea">
           <button class="num-btn grid-num n7" onclick="addDigit('7')">7</button>
           <button class="num-btn grid-num n8" onclick="addDigit('8')">8</button>
           <button class="num-btn grid-num n9" onclick="addDigit('9')">9</button>
@@ -696,6 +706,35 @@ updateDetailSettingsState();
 window.addEventListener('resize',resizeCanvas);
 window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 200));
 resizeCanvas();
+
+// ========================================================
+// 📱 スマホ用：画面全体のダブルタップズーム挙動をJavaScriptで強制遮断
+// ========================================================
+let lastTouchTime = 0;
+const container = document.getElementById('appBodyContainer');
+
+if (container) {
+  // タップが開始された瞬間に連続タップを判定
+  container.addEventListener('touchstart', function (e) {
+    const now = window.performance.now();
+    if (now - lastTouchTime <= 300) {
+      e.preventDefault(); // 300ms以内の連続タップをズームイベントごと強制キャンセル
+    }
+    lastTouchTime = now;
+  }, { passive: false });
+
+  // 指が離れた瞬間の連続タップ（ダブルタップ）も検知してブロック
+  container.addEventListener('touchend', function (e) {
+    const now = window.performance.now();
+    if (now - lastTouchTime <= 300) {
+      // セレクトボックス(select)やボタンの通常動作を完全に奪わないよう、
+      // 拡大ズームに関係するデフォルト動作のみを狙い撃ちで予防
+      if (e.target.tagName !== 'SELECT' && e.target.tagName !== 'OPTION') {
+        e.preventDefault();
+      }
+    }
+  }, { passive: false });
+}
 </script>
 </body>
 </html>
