@@ -323,16 +323,11 @@ const praises=['すごい！🌟','やったね！🎉','かんぺき！✨','�
 function updateDetailSettingsState() {
   const kurisSelect = document.getElementById('kuris');
   const group = document.getElementById('kuriSettingGroup');
-  const digitCombo = document.getElementById('digitCombo').value;
+  // 割り算が選ばれているかどうかを判定
+  const isDivide = (selectedOp === '÷');
   
-  // 判定ロジック：
-  // 1. 「1けたと1けた(1-1)」が選ばれている
-  // 2. かつ「足し算(+)」以外が選ばれている
-  // この両方を満たす場合のみグレーアウトする
-  const isOneDigitCombo = (digitCombo === '1-1');
-  const isNotPlus = (selectedOp !== '+');
-  
-  if (isOneDigitCombo && isNotPlus) {
+  // 割り算であれば、どの「けた設定」であってもグレーアウトする
+  if (isDivide) {
     kurisSelect.value = 'any';     // 設定をリセット
     kurisSelect.disabled = true;   // 操作を無効化
     group.classList.add('disabled-style'); // 見た目をグレーアウト
@@ -341,6 +336,7 @@ function updateDetailSettingsState() {
     group.classList.remove('disabled-style'); // 見た目を通常に戻す
   }
 }
+
 document.getElementById('opRow').querySelectorAll('.op-btn').forEach(b=>{
   b.addEventListener('click',()=>{
     document.querySelectorAll('.op-btn').forEach(x=>x.classList.remove('active'));
