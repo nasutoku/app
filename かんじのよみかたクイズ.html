@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>なとく かんじのよみかたクイズ</title>
+<title>かんじよみかたクイズ</title>
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -115,16 +115,21 @@
     padding: 1.5rem 1rem;
     text-align: center;
     box-shadow: 0 3px 12px rgba(37,117,252,0.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 160px;
   }
   .kanji-label { font-size: 0.85rem; color: #888; margin-bottom: 0.4rem; }
   .kanji-display { color: #1a3a7a; line-height: 1.15; }
-  .kanji-context { font-size: 0.95rem; color: #555; margin-top: 0.5rem; min-height: 1.4rem; }
+  .kanji-context { font-size: 0.95rem; color: #555; margin-top: 0.5rem; }
 
   .choices { width: 100%; display: flex; flex-direction: column; gap: 10px; }
   .choice-btn {
     width: 100%;
     padding: 0.85rem 1rem;
-    font-size: 1.15rem;
+    font-size: 1.6rem;
     font-weight: 700;
     background: #fff;
     color: #222;
@@ -187,15 +192,15 @@
   .back-btn {
     padding: 0.6rem 1.5rem;
     font-size: 1rem;
-    background: transparent;
-    color: #888;
-    border: 2px solid #ccc;
+    background: #fff;
+    color: #1a9e6e;
+    border: 2px solid #1a9e6e;
     border-radius: 50px;
     cursor: pointer;
     font-family: inherit;
-    transition: color 0.15s, border-color 0.15s;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
   }
-  .back-btn:hover { color: #333; border-color: #888; }
+  .back-btn:hover { background: #1a9e6e; color: #fff; }
 
   @keyframes pop {
     0%   { transform: scale(0.6); opacity: 0; }
@@ -277,8 +282,13 @@
 
   <!-- START -->
   <div id="screen-start" class="screen">
-    <div class="app-title">📖なとくアプリ📖<br><br>かんじのよみかたクイズ</div><br>
-    <div class="app-sub">がくねんをえらんでね！</div>
+    <div class="app-title" style="font-size:1.1rem;">📖 なとくアプリ 📖</div>
+    <div class="app-title"><div style="font-size:1.8rem; font-weight:700; letter-spacing:2px;">
+  <span style="color:#e74c3c;">か</span><span style="color:#e67e22;">ん</span><span style="color:#f1c40f;">じ</span><span style="color:#2ecc71;">の</span><span style="color:#1abc9c;">よ</span><span style="color:#3498db;">み</span><span style="color:#9b59b6;">か</span><span style="color:#e74c3c;">た</span><span style="color:#e67e22;">ク</span><span style="color:#f1c40f;">イ</span><span style="color:#2ecc71;">ズ</span>
+</div></div><br>
+
+
+    <div class="app-sub" style="font-size:1.1rem;">学年をえらんでね！</div>
     <div class="grade-grid">
       <button class="grade-btn g1" data-grade="1">１年生</button>
       <button class="grade-btn g2" data-grade="2">２年生</button>
@@ -292,7 +302,11 @@
 
   <!-- QUIZ -->
   <div id="screen-quiz" class="screen hidden">
-    <div style="font-size:1.1rem; font-weight:700; color:#1a56a4; letter-spacing:1px;">なとくアプリ かんじのよみかたクイズ</div>
+    <div style="font-size:1.4rem; font-weight:700; letter-spacing:2px;">
+      <div style="font-size:1.4rem; font-weight:700; letter-spacing:2px;">
+  <span style="color:#e74c3c;">か</span><span style="color:#e67e22;">ん</span><span style="color:#f1c40f;">じ</span><span style="color:#2ecc71;">の</span><span style="color:#1abc9c;">よ</span><span style="color:#3498db;">み</span><span style="color:#9b59b6;">か</span><span style="color:#e74c3c;">た</span><span style="color:#e67e22;">ク</span><span style="color:#f1c40f;">イ</span><span style="color:#2ecc71;">ズ</span>
+</div>
+    </div>
     <div class="q-header">
       <span id="q-num">1 / 10</span>
       <span class="q-score-live" id="q-score-live">0点</span>
@@ -301,9 +315,7 @@
       <div class="q-progress-fill" id="q-progress" style="width:0%"></div>
     </div>
     <div class="kanji-card">
-      <div class="kanji-label">よみかたは？</div>
       <div class="kanji-display" id="kanji-display"></div>
-      <div class="kanji-context" id="kanji-context"></div>
     </div>
     <div class="choices" id="choices"></div>
     <div class="feedback" id="feedback"></div>
@@ -320,30 +332,124 @@
       <div class="result-log" id="result-log"></div>
     </div>
     <button class="retry-btn" id="retry-btn">もう一度！</button>
-    <button class="back-btn" id="back-btn">がくねん選択にもどる</button>
+    <button class="back-btn" id="back-btn">学年選択に戻る</button>
   </div>
 
 </div><!-- /app -->
 
 <script>
 const DATA = {
-  1: [
-    {word:"山",        yomi:"やま",              decoy:["かわ","もり"]},
-    {word:"川",        yomi:"かわ",              decoy:["やま","うみ"]},
-    {word:"日",        yomi:"ひ",                decoy:["つき","ほし"]},
-    {word:"月",        yomi:"つき",              decoy:["ひ","かぜ"]},
-    {word:"火",        yomi:"ひ",                decoy:["みず","き"]},
-    {word:"水",        yomi:"みず",              decoy:["ひ","つち"]},
-    {word:"木",        yomi:"き",                decoy:["はな","くさ"]},
-    {word:"大人",      yomi:"おとな",            decoy:["おおひと","だいじん"]},
-    {word:"山川",      yomi:"やまかわ",          decoy:["さんせん","やませ"]},
-    {word:"日本",      yomi:"にほん",            decoy:["ひもと","にっぽん"]},
-    {word:"一日",      yomi:"いちにち",          decoy:["ひとひ","ついたち"]},
-    {word:"六月",      yomi:"ろくがつ",          decoy:["むつき","ろくつき"]},
-    {word:"花火",      yomi:"はなび",            decoy:["かか","はなか"]},
-    {word:"小石",      yomi:"こいし",            decoy:["しょうせき","ちいさいし"]},
-    {word:"手足",      yomi:"てあし",            decoy:["しゅそく","てそく"]},
-  ],
+  1:[
+  {word:"一",yomi:"いち",decoy:["に","さん"]},
+  {word:"二",yomi:"に",decoy:["いち","さん"]},
+  {word:"三",yomi:"さん",decoy:["に","よん"]},
+  {word:"四",yomi:"よん",decoy:["さん","し"]},
+  {word:"五",yomi:"ご",decoy:["よん","ろく"]},
+  {word:"六",yomi:"ろく",decoy:["ご","なな"]},
+  {word:"七",yomi:"なな",decoy:["ろく","しち"]},
+  {word:"八",yomi:"はち",decoy:["なな","きゅう"]},
+  {word:"九",yomi:"きゅう",decoy:["はち","じゅう"]},
+  {word:"十",yomi:"じゅう",decoy:["きゅう","ひゃく"]},
+
+  {word:"百",yomi:"ひゃく",decoy:["せん","じゅう"]},
+  {word:"千",yomi:"せん",decoy:["ひゃく","まん"]},
+  {word:"上",yomi:"うえ",decoy:["した","なか"]},
+  {word:"下",yomi:"した",decoy:["うえ","そと"]},
+  {word:"左",yomi:"ひだり",decoy:["みぎ","うえ"]},
+  {word:"右",yomi:"みぎ",decoy:["ひだり","した"]},
+  {word:"中",yomi:"なか",decoy:["そと","うえ"]},
+  {word:"大きい",yomi:"おおきい",decoy:["だいきい","おうきい"]},
+  {word:"小さい",yomi:"ちいさい",decoy:["しょうさい","こさい"]},
+  {word:"月",yomi:"つき",decoy:["ひ","ほし"]},
+
+  {word:"日",yomi:"にち",decoy:["め","つき"]},
+  {word:"火",yomi:"ひ",decoy:["みず","つち"]},
+  {word:"水",yomi:"みず",decoy:["ひ","き"]},
+  {word:"木",yomi:"き",decoy:["くさ","はな"]},
+  {word:"金",yomi:"きん",decoy:["ぎん","どう"]},
+  {word:"土",yomi:"つち",decoy:["いし","みず"]},
+  {word:"山",yomi:"やま",decoy:["かわ","もり"]},
+  {word:"川",yomi:"かわ",decoy:["やま","うみ"]},
+  {word:"田",yomi:"た",decoy:["はたけ","やま"]},
+  {word:"石",yomi:"いし",decoy:["かい","つち"]},
+
+  {word:"貝",yomi:"かい",decoy:["いし","たま"]},
+  {word:"雨",yomi:"あめ",decoy:["ゆき","くも"]},
+  {word:"空",yomi:"そら",decoy:["くも","うみ"]},
+  {word:"花",yomi:"はな",decoy:["くさ","き"]},
+  {word:"草",yomi:"くさ",decoy:["はな","き"]},
+  {word:"竹",yomi:"たけ",decoy:["き","くさ"]},
+  {word:"林",yomi:"はやし",decoy:["もり","やま"]},
+  {word:"森",yomi:"もり",decoy:["はやし","かわ"]},
+  {word:"虫",yomi:"むし",decoy:["とり","いぬ"]},
+  {word:"犬",yomi:"いぬ",decoy:["ねこ","むし"]},
+
+  {word:"人",yomi:"ひと",decoy:["こ","おとな"]},
+  {word:"子",yomi:"こ",decoy:["ひと","おや"]},
+  {word:"男",yomi:"おとこ",decoy:["おんな","だんし"]},
+  {word:"女",yomi:"おんな",decoy:["おとこ","じょし"]},
+  {word:"父",yomi:"ちち",decoy:["はは","そふ"]},
+  {word:"母",yomi:"はは",decoy:["ちち","あね"]},
+  {word:"目",yomi:"め",decoy:["みみ","はな"]},
+  {word:"耳",yomi:"みみ",decoy:["め","くち"]},
+  {word:"口",yomi:"くち",decoy:["はな","みみ"]},
+  {word:"手",yomi:"て",decoy:["あし","くち"]},
+
+  {word:"足",yomi:"あし",decoy:["て","みみ"]},
+  {word:"名",yomi:"な",decoy:["じ","ことば"]},
+  {word:"本",yomi:"ほん",decoy:["き","ぶん"]},
+  {word:"文",yomi:"ぶん",decoy:["ほん","もじ"]},
+  {word:"字",yomi:"じ",decoy:["ぶん","な"]},
+  {word:"先",yomi:"さき",decoy:["あと","まえ"]},
+  {word:"小学生",yomi:"しょうがくせい",decoy:["ちゅうがくせい","こうこうせい"]},
+  {word:"正しい",yomi:"ただしい",decoy:["まさしい","せいしい"]},
+  {word:"立つ",yomi:"たつ",decoy:["かつ","まつ"]},
+  {word:"見る",yomi:"みる",decoy:["かる","える"]},
+
+  {word:"入る",yomi:"はいる",decoy:["でる","あける"]},
+  {word:"出る",yomi:"でる",decoy:["はいる","しめる"]},
+  {word:"休む",yomi:"やすむ",decoy:["たたむ","よむ"]},
+  {word:"力",yomi:"ちから",decoy:["こころ","からだ"]},
+  {word:"音",yomi:"おと",decoy:["こえ","みみ"]},
+  {word:"円",yomi:"えん",decoy:["せん","まん"]},
+  {word:"玉",yomi:"たま",decoy:["いし","かい"]},
+  {word:"王",yomi:"おう",decoy:["たま","おお"]},
+  {word:"村",yomi:"むら",decoy:["まち","さと"]},
+  {word:"町",yomi:"まち",decoy:["むら","みち"]},
+
+  {word:"赤",yomi:"あか",decoy:["しろ","あお"]},
+  {word:"青",yomi:"あお",decoy:["あか","しろ"]},
+  {word:"白",yomi:"しろ",decoy:["あか","あお"]},
+  {word:"年",yomi:"ねん",decoy:["つき","ひ"]},
+  {word:"早い",yomi:"はやい",decoy:["おそい","ちかい"]},
+
+  {word:"一人",yomi:"ひとり",decoy:["いちじん","ひとびと"]},
+  {word:"二人",yomi:"ふたり",decoy:["にひと","にんじん"]},
+  {word:"一日",yomi:"ついたち",decoy:["いちひ","ひとひ"]},
+  {word:"二日",yomi:"ふつか",decoy:["にひ","にいび"]},
+  {word:"三日",yomi:"みっか",decoy:["さんび","みか"]},
+  {word:"四日",yomi:"よっか",decoy:["しにち","よにち"]},
+  {word:"五日",yomi:"いつか",decoy:["ごんにち","いつにち"]},
+  {word:"六日",yomi:"むいか",decoy:["むにち","ろくか"]},
+  {word:"七日",yomi:"なのか",decoy:["しちひ","ななび"]},
+  {word:"八日",yomi:"ようか",decoy:["はちひ","やっか"]},
+  {word:"九日",yomi:"ここのか",decoy:["きゅうび","きゅうじつ"]},
+  {word:"十日",yomi:"とおか",decoy:["じゅうじつ","とうか"]},
+
+  {word:"学校",yomi:"がっこう",decoy:["がくこう","まなびや"]},
+  {word:"先生",yomi:"せんせい",decoy:["せいせん","さきせい"]},
+  {word:"名前",yomi:"なまえ",decoy:["めいぜん","なさき"]},
+  {word:"手足",yomi:"てあし",decoy:["しゅそく","てそく"]},
+  {word:"花火",yomi:"はなび",decoy:["かび","はなひ"]},
+  {word:"青空",yomi:"あおぞら",decoy:["あおそら","せいくう"]},
+  {word:"山道",yomi:"やまみち",decoy:["さんどう","やまどう"]},
+  {word:"手紙",yomi:"てがみ",decoy:["てし","しゅし"]},
+  {word:"足音",yomi:"あしおと",decoy:["そくおん","あしね"]},
+  {word:"花見",yomi:"はなみ",decoy:["かけん","はなけん"]},
+  {word:"火山",yomi:"かざん",decoy:["ひやま","かさん"]},
+  {word:"水田",yomi:"すいでん",decoy:["みずた","すいた"]},
+  {word:"日本",yomi:"にほん",decoy:["ひもと","ひぼん"]}
+],
   2: [
     {word:"海",        yomi:"うみ",              decoy:["かわ","そら"]},
     {word:"雨",        yomi:"あめ",              decoy:["かぜ","くも"]},
@@ -431,6 +537,75 @@ const DATA = {
   ],
 };
 
+// ===== サウンド =====
+let audioCtx = null;
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playTone(frequency, type, duration, volume = 0.4, delay = 0) {
+  const ctx = getAudioCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.type = type;
+  osc.frequency.setValueAtTime(frequency, ctx.currentTime + delay);
+  gain.gain.setValueAtTime(volume, ctx.currentTime + delay);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
+  osc.start(ctx.currentTime + delay);
+  osc.stop(ctx.currentTime + delay + duration);
+}
+
+// 選択音（学年ボタン）: 軽くポンッ
+function playSelectSound() {
+  playTone(660, 'sine', 0.12, 0.3);
+}
+
+// 正解音: 明るいファンファーレ
+function playCorrectSound() {
+  playTone(523, 'sine', 0.12, 0.35, 0.00);
+  playTone(659, 'sine', 0.12, 0.35, 0.10);
+  playTone(784, 'sine', 0.25, 0.35, 0.20);
+}
+
+// 不正解音: 低くブー
+function playWrongSound() {
+  playTone(220, 'sawtooth', 0.15, 0.3, 0.00);
+  playTone(180, 'sawtooth', 0.25, 0.3, 0.12);
+}
+
+// 終了音（結果画面）: 達成感のあるメロディ
+function playFinishSound(pct) {
+  if (pct >= 1.0) {
+    // パーフェクト：高らかなファンファーレ
+    [[523,0],[659,0.1],[784,0.2],[1047,0.35]].forEach(([f,d]) => playTone(f,'sine',0.35,0.4,d));
+  } else if (pct >= 0.5) {
+    // 合格：明るく
+    playTone(523, 'sine', 0.2, 0.35, 0.0);
+    playTone(659, 'sine', 0.3, 0.35, 0.15);
+  } else {
+    // 低得点：励ます感じの下降音
+    playTone(330, 'sine', 0.15, 0.3, 0.00);
+    playTone(294, 'sine', 0.15, 0.3, 0.18);
+    playTone(262, 'sine', 0.30, 0.3, 0.36);
+  }
+}
+
+// はじめる・もういちど: 元気よくスタート
+function playStartSound() {
+  playTone(392, 'sine', 0.1, 0.35, 0.00);
+  playTone(523, 'sine', 0.2, 0.35, 0.10);
+}
+
+// がくねんせんたくにもどる: 戻る感じの下降音
+function playBackSound() {
+  playTone(523, 'sine', 0.1, 0.3, 0.00);
+  playTone(392, 'sine', 0.2, 0.3, 0.10);
+}
+// ====================
+
 let selectedGrade = null;
 let questions = [], current = 0, score = 0, log = [];
 const PER_Q = 10, POINTS = 10;
@@ -464,12 +639,13 @@ document.querySelectorAll('.grade-btn').forEach(btn => {
     btn.classList.add('selected');
     selectedGrade = parseInt(btn.dataset.grade);
     document.getElementById('start-btn').disabled = false;
+    playSelectSound();
   });
 });
 
-document.getElementById('start-btn').addEventListener('click', startQuiz);
-document.getElementById('retry-btn').addEventListener('click', startQuiz);
-document.getElementById('back-btn').addEventListener('click', () => showScreen('screen-start'));
+document.getElementById('start-btn').addEventListener('click', () => { playStartSound(); startQuiz(); });
+document.getElementById('retry-btn').addEventListener('click', () => { playStartSound(); startQuiz(); });
+document.getElementById('back-btn').addEventListener('click', () => { playBackSound(); showScreen('screen-start'); });
 
 function startQuiz() {
   questions = buildQuestions(selectedGrade);
@@ -489,7 +665,6 @@ function showQuestion() {
   const len = q.word.length;
   disp.style.fontSize = len >= 5 ? '2rem' : len >= 4 ? '2.4rem' : len >= 3 ? '3rem' : len >= 2 ? '3.5rem' : '4rem';
 
-  document.getElementById('kanji-context').textContent = '';
   document.getElementById('feedback').textContent = '';
   document.getElementById('feedback').className = 'feedback';
 
@@ -519,6 +694,7 @@ function answer(chosen, q) {
   if (ok) {
     fb.textContent = '';
     fb.className = 'feedback ok';
+    playCorrectSound();
     // 画面全体に⭕オーバーレイを表示
     const overlay = document.getElementById('correct-overlay');
     overlay.classList.add('show');
@@ -526,6 +702,7 @@ function answer(chosen, q) {
   } else {
     fb.textContent = `❌ こたえは「${q.yomi}」だよ`;
     fb.className = 'feedback ng';
+    playWrongSound();
   }
 
   setTimeout(() => {
@@ -537,16 +714,17 @@ function answer(chosen, q) {
 
 function showResult() {
   showScreen('screen-result');
+  const pct = score / (PER_Q * POINTS);
+  playFinishSound(pct);
   document.getElementById('result-score').textContent = `${score}点`;
   document.getElementById('result-sub').textContent =
     `${PER_Q}問中${log.filter(l => l.ok).length}問 せいかい！`;
 
-  const pct = score / (PER_Q * POINTS);
   let emoji, title, stars;
   if      (pct >= 1.0) { emoji = '🎉'; title = 'かんぺき！すごいね！';  stars = '⭐⭐⭐'; }
   else if (pct >= 0.8) { emoji = '😄'; title = 'よくできました！';      stars = '⭐⭐'; }
-  else if (pct >= 0.5) { emoji = '🙂'; title = 'もう少しがんばろう！';  stars = '⭐'; }
-  else                 { emoji = '😢'; title = 'また練習しよう！';       stars = ''; }
+  else if (pct >= 0.5) { emoji = '🙂'; title = 'またやってみよう！';  stars = '⭐'; }
+  else                 { emoji = '🙂'; title = 'またやってみよう！';  stars = ''; }
 
   document.getElementById('result-emoji').textContent = emoji;
   document.getElementById('result-title').textContent = title;
