@@ -323,17 +323,25 @@ const praises=['すごい！🌟','やったね！🎉','かんぺき！✨','�
 function updateDetailSettingsState() {
   const kurisSelect = document.getElementById('kuris');
   const group = document.getElementById('kuriSettingGroup');
-  // 割り算が選ばれているかどうかを判定
-  const isDivide = (selectedOp === '÷');
+  const digitCombo = document.getElementById('digitCombo').value;
   
-  // 割り算であれば、どの「けた設定」であってもグレーアウトする
-  if (isDivide) {
-    kurisSelect.value = 'any';     // 設定をリセット
-    kurisSelect.disabled = true;   // 操作を無効化
-    group.classList.add('disabled-style'); // 見た目をグレーアウト
+  // 各条件の判定
+  const isDivide = (selectedOp === '÷');
+  const isOneDigitCombo = (digitCombo === '1-1');
+  const isMinusOrTimes = (selectedOp === '-' || selectedOp === '×');
+  
+  // 判定ロジック：
+  // 1. 割り算のときは、どの設定でもグレーアウト
+  // 2. 引き算または掛け算のときは、「1けたと1けた」のときだけグレーアウト
+  const shouldDisable = isDivide || (isOneDigitCombo && isMinusOrTimes);
+  
+  if (shouldDisable) {
+    kurisSelect.value = 'any';
+    kurisSelect.disabled = true;
+    group.classList.add('disabled-style');
   } else {
-    kurisSelect.disabled = false;  // 操作を有効化
-    group.classList.remove('disabled-style'); // 見た目を通常に戻す
+    kurisSelect.disabled = false;
+    group.classList.remove('disabled-style');
   }
 }
 
