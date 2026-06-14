@@ -815,9 +815,23 @@ function answer(chosen, q) {
     playCorrectSound();
     // 画面全体に⭕オーバーレイを表示
     const overlay = document.getElementById('correct-overlay');
+    
+    // クラスを一度外して強制的にリセット（スマートフォン対策）
+    overlay.classList.remove('show');
+    
+    // ブラウザに「今の状態を再計算させる」魔法のコード
+    void overlay.offsetWidth; 
+    
+    // 再度クラスを付与
     overlay.classList.add('show');
+    
     setTimeout(() => overlay.classList.remove('show'), 1000);
-  } else {
+  
+
+
+
+
+} else {
     fb.textContent = `❌ こたえは「${q.yomi}」だよ`;
     fb.className = 'feedback ng';
     playWrongSound();
