@@ -215,15 +215,20 @@
 
   /* ===== 正解オーバーレイ ===== */
   #correct-overlay {
-    display: none;
     position: fixed;
     inset: 0;
     z-index: 999;
     pointer-events: none;
+    display: flex;
     justify-content: center;
     align-items: center;
+    visibility: hidden;
+    opacity: 0;
   }
-  #correct-overlay.show { display: flex; }
+  #correct-overlay.show {
+    visibility: visible;
+    opacity: 1;
+  }
 
   /* 半透明の緑フラッシュ背景 */
   #correct-overlay::before {
@@ -231,6 +236,9 @@
     position: absolute;
     inset: 0;
     background: rgba(40, 200, 100, 0.18);
+    opacity: 0;
+  }
+  #correct-overlay.show::before {
     animation: flash-bg 0.6s ease forwards;
   }
   @keyframes flash-bg {
@@ -247,8 +255,10 @@
     border-radius: 50%;
     border: 10vmin solid rgba(220, 50, 50, 0.6);
     background: transparent;
+    opacity: 0;
+  }
+  #correct-overlay.show .overlay-circle {
     animation: circle-pop 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    animation-iteration-count: 1; /* 1回のみ再生を強制 */
   }
   @keyframes circle-pop {
     0%   { transform: scale(0.2) rotate(-20deg); opacity: 0; }
@@ -268,6 +278,9 @@
     color: #c0392b;
     white-space: nowrap;
     letter-spacing: 2px;
+    opacity: 0;
+  }
+  #correct-overlay.show .overlay-text {
     animation: text-fade 0.9s ease forwards;
   }
   @keyframes text-fade {
@@ -817,21 +830,20 @@ function answer(chosen, q) {
 
     // 画面全体に⭕オーバーレイを表示
   const overlay = document.getElementById('correct-overlay');
-  
-  // 1. 一度アニメーションを強制停止させるためにリセット
-  overlay.style.animation = 'none';
-  // 2. ブラウザに処理を反映させるための再計算
-  void overlay.offsetWidth; 
-  // 3. アニメーションを再開する（CSSで定義したアニメーション名を指定）
-  overlay.style.animation = null; 
-  
-  // 4. クラスを付与して表示
-  overlay.classList.add('show');
 
-  // 5. 終了後にクラスを削除
-  setTimeout(() => {
-    overlay.classList.remove('show');
-  }, 1000);
+  // iOS Safariでも確実にアニメーションをリセットするため
+  // いったん show を外してフレームをまたいでから付与する
+  overlay.classList.remove('show');
+  // requestAnimationFrame を2重にしてレイアウト計算を確実に挟む
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      overlay.classList.add('show');
+      // 終了後にクラスを削除
+      setTimeout(() => {
+        overlay.classList.remove('show');
+      }, 1000);
+    });
+  });
 
 
 
