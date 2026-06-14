@@ -813,20 +813,25 @@ function answer(chosen, q) {
     fb.textContent = '';
     fb.className = 'feedback ok';
     playCorrectSound();
+
     // 画面全体に⭕オーバーレイを表示
     const overlay = document.getElementById('correct-overlay');
     
-    // クラスを一度外して強制的にリセット（スマートフォン対策）
+    // --- 修正箇所：ここから ---
+    // 1. 一旦クラスを外してリセット
     overlay.classList.remove('show');
     
-    // ブラウザに「今の状態を再計算させる」魔法のコード
+    // 2. ブラウザにレイアウトを強制再計算させる
     void overlay.offsetWidth; 
     
-    // 再度クラスを付与
+    // 3. クラスを付与してアニメーション開始
     overlay.classList.add('show');
     
-    setTimeout(() => overlay.classList.remove('show'), 1000);
-  
+    // 4. アニメーションが終わる少し後に、確実にクラスを削除する
+    // setTimeoutの時間をアニメーション時間(0.9s)より少し長く設定
+    setTimeout(() => {
+        overlay.classList.remove('show');
+    }, 1000);
 
 
 
