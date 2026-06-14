@@ -248,6 +248,7 @@
     border: 10vmin solid rgba(220, 50, 50, 0.6);
     background: transparent;
     animation: circle-pop 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-iteration-count: 1; /* 1回のみ再生を強制 */
   }
   @keyframes circle-pop {
     0%   { transform: scale(0.2) rotate(-20deg); opacity: 0; }
