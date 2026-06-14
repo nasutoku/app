@@ -816,7 +816,7 @@ function answer(chosen, q) {
     // 画面全体に⭕オーバーレイを表示
     const overlay = document.getElementById('correct-overlay');
     overlay.classList.add('show');
-    setTimeout(() => overlay.classList.remove('show'), 1000);
+    setTimeout(() => overlay.classList.remove('show'), 1500);
   } else {
     fb.textContent = `❌ こたえは「${q.yomi}」だよ`;
     fb.className = 'feedback ng';
