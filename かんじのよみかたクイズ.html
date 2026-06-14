@@ -179,28 +179,32 @@
     padding: 0.85rem 2.5rem;
     font-size: 1.2rem;
     font-weight: 700;
-    background: #fff;
-    color: #2575fc;
+    background: #2575fc;   /* 通常時の背景を青に */
+    color: #fff;           /* 通常時の文字を白に */
     border: 3px solid #2575fc;
     border-radius: 50px;
     cursor: pointer;
     font-family: inherit;
     transition: background 0.15s, color 0.15s;
   }
-  .retry-btn:hover { background: #2575fc; color: #fff; }
+  /* ポインタを合わせたときに白ベース（背景白・文字青）にする */
+  .retry-btn:hover { background: #fff; color: #2575fc; }
+
+
 
   .back-btn {
     padding: 0.6rem 1.5rem;
     font-size: 1rem;
-    background: #fff;
-    color: #1a9e6e;
+    background: #1a9e6e;   /* 通常時の背景を緑に */
+    color: #fff;           /* 通常時の文字を白に */
     border: 2px solid #1a9e6e;
     border-radius: 50px;
     cursor: pointer;
     font-family: inherit;
     transition: color 0.15s, border-color 0.15s, background 0.15s;
   }
-  .back-btn:hover { background: #1a9e6e; color: #fff; }
+  /* ポインタを合わせたときに白ベース（背景白・文字緑）にする */
+  .back-btn:hover { background: #fff; color: #1a9e6e; }
 
   @keyframes pop {
     0%   { transform: scale(0.6); opacity: 0; }
@@ -343,10 +347,10 @@ const DATA = {
   {word:"一",yomi:"いち",decoy:["に","さん"]},
   {word:"二",yomi:"に",decoy:["いち","さん"]},
   {word:"三",yomi:"さん",decoy:["に","よん"]},
-  {word:"四",yomi:"よん",decoy:["さん","し"]},
+  {word:"四",yomi:"よん",decoy:["さん","ご"]},
   {word:"五",yomi:"ご",decoy:["よん","ろく"]},
   {word:"六",yomi:"ろく",decoy:["ご","なな"]},
-  {word:"七",yomi:"なな",decoy:["ろく","しち"]},
+  {word:"七",yomi:"しち",decoy:["ろく","はち"]},
   {word:"八",yomi:"はち",decoy:["なな","きゅう"]},
   {word:"九",yomi:"きゅう",decoy:["はち","じゅう"]},
   {word:"十",yomi:"じゅう",decoy:["きゅう","ひゃく"]},
@@ -440,27 +444,18 @@ const DATA = {
   {word:"青空",yomi:"あおぞら",decoy:["あおくう","せいくう"]},
   {word:"足音",yomi:"あしおと",decoy:["そくおん","あしね"]},
   {word:"花見",yomi:"はなみ",decoy:["かけん","はなけん"]},
-  {word:"日本",yomi:"にほん",decoy:["ひもと","ひぼん"]}
-　{word:"天気",yomi:"てんき",decoy:["あまき","てんけ"]}
-　{word:"夕日",yomi:"ゆうひ",decoy:["あさひ","たび"]}
+  {word:"日本",yomi:"にほん",decoy:["ひもと","ひぼん"]},
+　{word:"天気",yomi:"てんき",decoy:["あまき","てんけ"]},
+　{word:"夕日",yomi:"ゆうひ",decoy:["あさひ","たび"]},
 　{word:"十円",yomi:"じゅうえん",decoy:["じゅうまん","じゅうりょう"]},
 
 　
-　{word:"立つ",yomi:"たつ",decoy:["かつ","まつ"]},
-  {word:"見る",yomi:"みる",decoy:["かる","える"]},
-  {word:"入る",yomi:"はいる",decoy:["でる","あける"]},
-  {word:"出る",yomi:"でる",decoy:["はいる","しめる"]},
-  {word:"休む",yomi:"やすむ",decoy:["たたむ","よむ"]},
-　{word:"生まれる",yomi:"うまれる",decoy:["とまれる","かまれる"]},
-
-
-　//{word:"学ぶ",yomi:"まなぶ",decoy:["まねぶ","ならぶ"]},
-　//{word:"火山",yomi:"かざん",decoy:["ひやま","かさん"]},
-　//{word:"水田",yomi:"すいでん",decoy:["みずた","すいた"]},
-
-
-
-
+　{word:"立つ",     yomi:"たつ",    decoy:["かつ","まつ"]},
+  {word:"見る",     yomi:"みる",    decoy:["かる","える"]},
+  {word:"入る",     yomi:"はいる",  decoy:["でる","あける"]},
+  {word:"出る",     yomi:"でる",    decoy:["はいる","しめる"]},
+  {word:"休む",     yomi:"やすむ",  decoy:["たたむ","よむ"]},
+　{word:"生まれる", yomi:"うまれる",decoy:["とまれる","かまれる"]},
 ],
   2: [
     {word:"朝",    　  yomi:"あさ",    　　　    decoy:["ひる","よる"]},
@@ -560,7 +555,7 @@ const DATA = {
     {word:"半分",      yomi:"はんぶん",          decoy:["なかぶん","はんふん"]},
     {word:"番組",      yomi:"ばんぐみ",          decoy:["ばんくみ","ばんそ"]},
     {word:"風船",      yomi:"ふうせん",          decoy:["かぜふね","ふせん"]},
-　　{word:"汽車",      yomi:"きしゃ",    　      decoy:["でんしゃ",""]},
+　　{word:"汽車",      yomi:"きしゃ",    　      decoy:["でんしゃ","きせん"]},
    
 　　
 　　{word:"強い",      yomi:"つよい",            decoy:["とおい","よわい"]},
@@ -587,43 +582,7 @@ const DATA = {
 　　{word:"回る",      yomi:"まわる",     　     decoy:["まる","かいる"]},
 　　{word:"鳴く",      yomi:"なく",     　    　 decoy:["まる","かいる"]},
 　　{word:"引く",      yomi:"ひく",              decoy:["あく","いく"]},
-　　
-　　
-
-　　//{word:"米作",      yomi:"べいさく",          decoy:["こめさく","まいさく"]},
-　　//{word:"週末",      yomi:"しゅうまつ",        decoy:["しゅまつ","しゅうすえ"]},
-　　//{word:"語る",      yomi:"かたる",            decoy:["ごる","しゃべる"]},
-　　//{word:"古代",      yomi:"こだい",            decoy:["ふるしろ","こよ"]},
-　　//{word:"才人",      yomi:"さいじん",          decoy:["さいにん","ざいじん"]},
-　　//{word:"市民",      yomi:"しみん",            decoy:["いちみん","しじん"]},
-　　//{word:"寺院",      yomi:"じいん",            decoy:["てらいん","じえん"]},
-　　//{word:"秋分",      yomi:"しゅうぶん",        decoy:["あきわけ","しゅんぶん"]},  
-　　//{word:"声楽",      yomi:"せいがく",          decoy:["こえがく","しょうがく"]},
-　　//{word:"記す",      yomi:"しるす",            decoy:["きす","かくす"]},
-　　//{word:"弱点",      yomi:"じゃくてん",        decoy:["よわてん","じゃってん"]},
-　　//{word:"当番",      yomi:"とうばん",          decoy:["あたりばん","とうはん"]},
-　　//{word:"行動",      yomi:"こうどう",          decoy:["ぎょうどう","いきどう"]},
-　　//{word:"自動車",    yomi:"じどうしゃ",        decoy:["じどうくるま","しどうしゃ"]},
-　　//{word:"首都",      yomi:"しゅと",            decoy:["くびみやこ","しゅどう"]},
-    //{word:"春風",      yomi:"しゅんぷう",        decoy:["はるかぜ","しゅんふう"]},
-　　//{word:"場面",      yomi:"ばめん",            decoy:["じょうめん","ばおも"]},
- 　 //{word:"店員",      yomi:"てんいん",          decoy:["みせいん","てんえん"]},
-　　//{word:"麦畑",      yomi:"むぎばたけ",        decoy:["ばくでん","むぎはた"]},
-　　//{word:"作業",      yomi:"さぎょう",          decoy:["さくぎょう","つくりぎょう"]},
-　　//{word:"食堂",      yomi:"しょくどう",        decoy:["たべどう","しょくとう"]},
-　　//{word:"線路",      yomi:"せんろ",            decoy:["せんじ","せんみち"]},
-　　//{word:"計算",      yomi:"けいさん",          decoy:["けさん","はかりざん"]},
-　　//{word:"合計",      yomi:"ごうけい",          decoy:["あいけい","ごうか"]},
-    //{word:"算数",      yomi:"さんすう",         decoy:["さんずう","かずがく"]},
-　　//
-  　//{word:"体長",      yomi:"たいちょう",        decoy:["からだながさ","たいしょう"]},
-　　//{word:"茶色",      yomi:"ちゃいろ",          decoy:["さいろ","ちゃしょく"]},
- 　 //{word:"読書",      yomi:"どくしょ",          decoy:["よみしょ","どくしょう"]},
-　　//{word:"船長",      yomi:"せんちょう",        decoy:["ふねちょう","せんしょう"]},
-　　//{word:"教室",      yomi:"きょうしつ",        decoy:["きょしつ","おしえしつ"]},
-　　//{word:"電池",      yomi:"でんち",            decoy:["でんいけ","てんち"]},
-　　//{word:"多分",      yomi:"たぶん",            decoy:["おおわけ","たふん"]},
-　　//{word:"黒板",      yomi:"こくばん",          decoy:["くろいた","こくはん"]},
+　　　
 ],
   3: [
     {word:"温度",      yomi:"おんど",            decoy:["あつさ","ぬくど"]},
@@ -714,6 +673,7 @@ function playTone(frequency, type, duration, volume = 0.4, delay = 0) {
   gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
   osc.start(ctx.currentTime + delay);
   osc.stop(ctx.currentTime + delay + duration);
+
 }
 
 // 選択音（学年ボタン）: 軽くポンッ
@@ -730,8 +690,8 @@ function playCorrectSound() {
 
 // 不正解音: 低くブー
 function playWrongSound() {
-  playTone(220, 'sine', 0.15, 0.2, 0.00);
-  playTone(180, 'sine', 0.25, 0.2, 0.12);
+  playTone(220, 'sine', 0.15, 0.3, 0.00);
+  playTone(180, 'sine', 0.25, 0.3, 0.12);
 }
 
 // 終了音（結果画面）: 達成感のあるメロディ
