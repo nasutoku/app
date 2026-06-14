@@ -816,7 +816,13 @@ function answer(chosen, q) {
     // 画面全体に⭕オーバーレイを表示
     const overlay = document.getElementById('correct-overlay');
     overlay.classList.add('show');
-    setTimeout(() => overlay.classList.remove('show'), 1500);
+    setTimeout(() => {
+      overlay.classList.remove('show');
+      current++;
+      if (current < PER_Q) showQuestion();
+      else showResult();
+    }, 1000); // ここを1000にすることで、⭕が消える瞬間に次へ行きます
+  
   } else {
     fb.textContent = `❌ こたえは「${q.yomi}」だよ`;
     fb.className = 'feedback ng';
@@ -827,7 +833,7 @@ function answer(chosen, q) {
     current++;
     if (current < PER_Q) showQuestion();
     else showResult();
-  }, 1500);
+  }, 1600);
 }
 
 function showResult() {
