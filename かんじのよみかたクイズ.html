@@ -809,35 +809,27 @@ function answer(chosen, q) {
   });
 
   const fb = document.getElementById('feedback');
-  
   if (ok) {
     fb.textContent = '';
     fb.className = 'feedback ok';
     playCorrectSound();
+    // 画面全体に⭕オーバーレイを表示
     const overlay = document.getElementById('correct-overlay');
     overlay.classList.add('show');
-    
-    // 正解時は1000msで⭕を消して、そこから次へ
-    setTimeout(() => {
-      overlay.classList.remove('show');
-      current++;
-      if (current < PER_Q) showQuestion();
-      else showResult();
-    }, 1200);
-    
+    setTimeout(() => overlay.classList.remove('show'), 1000);
   } else {
     fb.textContent = `❌ こたえは「${q.yomi}」だよ`;
     fb.className = 'feedback ng';
     playWrongSound();
-    
-    // 不正解時はご希望の1600ms待ってから次へ
-    setTimeout(() => {
-      current++;
-      if (current < PER_Q) showQuestion();
-      else showResult();
-    }, 1600);
   }
+
+  setTimeout(() => {
+    current++;
+    if (current < PER_Q) showQuestion();
+    else showResult();
+  }, 1500);
 }
+
 function showResult() {
   showScreen('screen-result');
   const pct = score / (PER_Q * POINTS);
