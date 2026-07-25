@@ -21,9 +21,18 @@
     --shadow:      rgba(0,0,0,.45);
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
+  html,body{margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  *{
+    -webkit-touch-callout:none;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+  }
   body{
     min-height:100vh;
+    touch-action:manipulation;
     background:
       radial-gradient(ellipse at 20% -10%, rgba(200,160,90,.10), transparent 55%),
       radial-gradient(ellipse at 90% 110%, rgba(140,60,50,.12), transparent 55%),
@@ -360,6 +369,18 @@
 
   <footer>13-string Koto Simulator · Karplus–Strong string synthesis · Web Audio API</footer>
 
+<script>
+(function(){
+  "use strict";
+  /* iPad Safariのダブルタップ拡大（青いハイライトの点滅）を抑止 */
+  var lastTouchEnd = 0;
+  document.addEventListener("touchend", function(e){
+    var now = Date.now();
+    if (now - lastTouchEnd <= 400) e.preventDefault();
+    lastTouchEnd = now;
+  }, {passive:false});
+})();
+</script>
 <script>
 (function(){
   "use strict";
